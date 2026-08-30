@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التميز ستور</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF5EC;
+    --coral:#E8876B;
+    --sage:#93AD82;
+    --sun:#F0C348;
+    --plum:#3E2E36;
+    --plum-soft:#6E5A61;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Tajawal', sans-serif;
+    background:var(--cream);
+    color:var(--plum);
+    line-height:1.6;
+  }
+  h1,h2,h3,.headline{ font-family:'Baloo 2', sans-serif; }
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:20px 6%;
+    background:var(--cream);
+  }
+  .logo{ font-family:'Baloo 2'; font-weight:800; font-size:1.5rem; color:var(--coral); }
+  .logo span{ color:var(--sage); }
+  nav .links{ display:flex; gap:28px; font-weight:500; font-size:0.95rem; }
+  nav .links a{ color:var(--plum); text-decoration:none; }
+  .hero{
+    display:flex; align-items:center; gap:40px;
+    padding:40px 6% 70px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-text{ flex:1; max-width:520px; }
+  .hero-text h1{
+    font-size:2.6rem; font-weight:800; line-height:1.25;
+    color:var(--plum);
+  }
+  .hero-text h1 em{ font-style:normal; color:var(--coral); }
+  .hero-text p{
+    margin:18px 0 26px; font-size:1.05rem; color:var(--plum-soft); max-width:430px;
+  }
+  .btn{
+    display:inline-block; background:var(--coral); color:white;
+    padding:14px 30px; border-radius:40px; font-weight:700;
+    text-decoration:none; font-size:1rem;
+    box-shadow:0 6px 0 #C96B4F;
+  }
+  .hero-visual{
+    flex:1; display:flex; justify-content:center; align-items:center;
+    position:relative; height:340px;
+  }
+  .blob{
+    position:absolute; width:280px; height:280px; border-radius:50%;
+    background:var(--sun); opacity:0.35;
+  }
+  .toy-circle{
+    width:220px; height:220px; border-radius:50%;
+    background:var(--card); display:flex; align-items:center; justify-content:center;
+    font-size:5rem; z-index:2; box-shadow:0 10px 30px rgba(62,46,54,0.12);
+  }
+  .float{ position:absolute; font-size:2.3rem; z-index:3; }
+  .f1{ top:10px; right:30px; }
+  .f2{ bottom:20px; left:10px; }
+  .f3{ top:50%; right:0; }
+  .products{ padding:20px 6% 70px; }
+  .section-head{ text-align:center; margin-bottom:40px; }
+  .section-head h2{ font-size:2rem; color:var(--plum); }
+  .section-head p{ color:var(--plum-soft); margin-top:8px; }
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .card{
+    background:var(--card); border-radius:22px; overflow:hidden;
+    box-shadow:0 8px 24px rgba(62,46,54,0.08);
+    display:flex; flex-direction:column;
+  }
+  .card-img{
+    height:180px; display:flex; align-items:center; justify-content:center;
+    font-size:4rem;
+  }
+  .bg1{ background:#FCE7D8; }
+  .bg2{ background:#E4EEDF; }
+  .bg3{ background:#FBF0D4; }
+  .card-body{ padding:18px 20px 22px; }
+  .card-body h3{ font-family:'Tajawal'; font-weight:700; font-size:1.05rem; margin-bottom:6px; }
+  .card-body .desc{ font-size:0.88rem; color:var(--plum-soft); margin-bottom:14px; }
+  .card-footer{ display:flex; justify-content:space-between; align-items:center; }
+  .price{ font-family:'Baloo 2'; font-weight:700; color:var(--coral); font-size:1.15rem; }
+  .order-btn{
+    background:var(--sage); color:white; border:none; padding:9px 18px;
+    border-radius:30px; font-family:'Tajawal'; font-weight:700; font-size:0.85rem;
+    cursor:pointer;
+  }
+  .trust{
+    display:flex; justify-content:center; gap:50px; flex-wrap:wrap;
+    padding:30px 6%; background:#F1E8DA;
+  }
+  .trust-item{ text-align:center; font-size:0.9rem; color:var(--plum-soft); font-weight:500; }
+  .trust-item span{ display:block; font-size:1.6rem; margin-bottom:6px; }
+  .cta{ text-align:center; padding:70px 6%; }
+  .cta h2{ font-size:1.9rem; margin-bottom:14px; }
+  .cta p{ color:var(--plum-soft); margin-bottom:26px; }
+  footer{
+    text-align:center; padding:26px; font-size:0.85rem;
+    background:var(--plum); color:#EADFD9;
+  }
+  footer .logo2{ font-family:'Baloo 2'; color:var(--sun); font-weight:800; }
+  @media(max-width:800px){
+    .hero{ flex-direction:column; text-align:center; padding-top:20px;}
+    .hero-text{ max-width:100%; }
+    .hero-text p{ margin-left:auto; margin-right:auto; }
+    .grid{ grid-template-columns:1fr; }
+    nav .links{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">التميز <span>ستور</span></div>
+  <div class="links">
+    <a href="#">الرئيسية</a>
+    <a href="#">المنتجات</a>
+    <a href="#">تواصل معنا</a>
+  </div>
+  <a href="#" class="btn" style="padding:10px 22px; font-size:0.85rem;">اطلبي الآن</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-text">
+    <h1>ألعاب بتنمّي <em>خيال</em> طفلك، من غير ما تحسي إنه بيتعلم</h1>
+    <p>ألعاب مونتيسوري آمنة ومختارة بعناية لكل مرحلة عمرية، من عمر يوم لسن ٥ سنين.</p>
+    <a href="#" class="btn">شوفي المنتجات</a>
+  </div>
+  <div class="hero-visual">
+    <div class="blob"></div>
+    <div class="float f1">🧸</div>
+    <div class="float f2">🪀</div>
+    <div class="float f3">⭐</div>
+    <div class="toy-circle">🐟</div>
+  </div>
+</section>
+
+<section class="products">
+  <div class="section-head">
+    <h2>المنتجات الأكتر طلبًا</h2>
+    <p>مختارة بعناية من أمهات جربوها فعلاً</p>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img bg1">🎣</div>
+      <div class="card-body">
+        <h3>لعبة الصيد المغناطيسية</h3>
+        <p class="desc">تنمّي التركيز والتناسق الحركي، خامة آمنة 100%</p>
+        <div class="card-footer">
+          <span class="price">١٩٩ ج.م</span>
+          <button class="order-btn">اطلبي</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img bg2">🧩</div>
+      <div class="card-body">
+        <h3>بازل خشبي تعليمي</h3>
+        <p class="desc">أشكال وألوان لتنمية المهارات الذهنية</p>
+        <div class="card-footer">
+          <span class="price">١٤٩ ج.م</span>
+          <button class="order-btn">اطلبي</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img bg3">🪘</div>
+      <div class="card-body">
+        <h3>خشخيشة حديثي الولادة</h3>
+        <p class="desc">ناعمة وآمنة تمامًا لأصغر الأيدي</p>
+        <div class="card-footer">
+          <span class="price">٧٩ ج.م</span>
+          <button class="order-btn">اطلبي</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="trust-item"><span>🚚</span>شحن لكل المحافظات</div>
+  <div class="trust-item"><span>💵</span>الدفع عند الاستلام</div>
+  <div class="trust-item"><span>✅</span>خامات آمنة 100%</div>
+</div>
+
+<section class="cta">
+  <h2>لسه مقررتيش؟ كلمينا دلوقتي</h2>
+  <p>فريقنا جاهز يساعدك تختاري الأنسب لعمر طفلك</p>
+  <a href="#" class="btn">راسلينا على واتساب</a>
+</section>
+
+<footer>
+  <div class="logo2">التميز ستور</div>
+  <p style="margin-top:10px;">جميع الحقوق محفوظة © 2026</p>
+</footer>
+
+</body>
+</html>
