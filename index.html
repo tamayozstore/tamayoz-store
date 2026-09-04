@@ -30,6 +30,7 @@
         header h1 {
             color: #e67e22;
             font-size: 24px;
+            font-weight: 800;
         }
 
         .container {
@@ -46,6 +47,7 @@
         .section-title h2 {
             font-size: 22px;
             color: #2c3e50;
+            font-weight: 800;
         }
 
         .section-title p {
@@ -77,6 +79,7 @@
             aspect-ratio: 1;
             object-fit: cover;
             border-radius: 12px;
+            background-color: #f0f0f0;
         }
 
         .product-card h3 {
@@ -124,6 +127,43 @@
         .age-card h3 {
             font-size: 15px;
             font-weight: 700;
+        }
+
+        /* جدول أسعار الشحن */
+        .shipping-table {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        .shipping-table table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        .shipping-table th, .shipping-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .shipping-table th {
+            color: #e67e22;
+            font-weight: 800;
+            background-color: #fdfaf5;
+            border-radius: 8px;
+        }
+
+        .shipping-table td {
+            color: #444;
+        }
+
+        .shipping-table tr:last-child td {
+            border-bottom: none;
         }
 
         /* مميزات المتجر */
@@ -205,7 +245,6 @@
         </div>
 
         <div class="age-grid">
-            <!-- استخدام مسارات نسبية بدون سلاش في البداية لتفادي خطأ 404 -->
             <a href="months-0-12/" class="age-card">
                 <div class="icon">👶</div>
                 <h3>من 0 لـ 12 شهر</h3>
@@ -227,7 +266,42 @@
             </a>
         </div>
 
-        <!-- مميزات الشحن -->
+        <!-- قسم أسعار الشحن -->
+        <div class="section-title">
+            <h2>أسعار الشحن لكل المحافظات</h2>
+            <p>التوصيل لحد باب البيت مع إمكانية المعاينة قبل الاستلام</p>
+        </div>
+
+        <div class="shipping-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>المحافظة / المنطقة</th>
+                        <th>سعر الشحن</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>القاهرة والجيزة</td>
+                        <td>٤٥ ج.م</td>
+                    </tr>
+                    <tr>
+                        <td>الإسكندرية والوجه البحري</td>
+                        <td>٥٥ ج.م</td>
+                    </tr>
+                    <tr>
+                        <td>مدن القناة والساحل</td>
+                        <td>٦٥ ج.م</td>
+                    </tr>
+                    <tr>
+                        <td>محافظات الصعيد</td>
+                        <td>٧٠ ج.م</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- مميزات الشحن والدفع -->
         <div class="features">
             <div class="feature-item">
                 <span>🚚</span>
