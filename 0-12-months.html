@@ -44,7 +44,17 @@
     box-shadow:0 8px 20px rgba(62,46,54,0.07); display:flex; flex-direction:column;
   }
   .pcard-img{ height:180px; overflow:hidden; background:#FCE7D8; display:flex; align-items:center; justify-content:center; }
-  .pcard-img img{ width:100%; height:100%; object-fit:cover; }
+  .pcard-img img{ width:100%; height:100%; object-fit:contain; cursor:pointer; }
+  .lightbox{
+    display:none; position:fixed; inset:0; background:rgba(62,46,54,0.9);
+    z-index:999; align-items:center; justify-content:center; padding:20px;
+  }
+  .lightbox.active{ display:flex; }
+  .lightbox img{ max-width:100%; max-height:90vh; border-radius:12px; }
+  .lightbox-close{
+    position:absolute; top:20px; left:20px; color:white; font-size:2rem;
+    background:none; border:none; cursor:pointer;
+  }
   .pcard-body{ padding:16px; text-align:center; }
   .pcard-body h3{ font-size:1.1rem; font-weight:700; margin-bottom:8px; }
   .pcard-body .price{ font-family:'Baloo 2'; font-weight:700; color:var(--coral); font-size:1.2rem; margin-bottom:12px; }
@@ -87,7 +97,7 @@
     <!-- منتج 1 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠١_٢١٥١٤٠.jpg" alt="سجادة مائية حسية">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠١_٢١٥١٤٠.jpg" alt="سجادة مائية حسية">
       </div>
       <div class="pcard-body">
         <h3>سجادة مائية حسية (دائرة)</h3>
@@ -99,7 +109,7 @@
     <!-- منتج 2 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٨١٧_٢١٣٦٤٥.png" alt="باكت شخاليل 10 قطع">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٨١٧_٢١٣٦٤٥.png" alt="باكت شخاليل 10 قطع">
       </div>
       <div class="pcard-body">
         <h3>باكت شخاليل 10 قطع</h3>
@@ -111,7 +121,7 @@
     <!-- منتج 3 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٨٤٧.jpg" alt="فيل صوت ونور">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٨٤٧.jpg" alt="فيل صوت ونور">
       </div>
       <div class="pcard-body">
         <h3>فيل صوت ونور</h3>
@@ -123,7 +133,7 @@
     <!-- منتج 4 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩٠٢.jpg" alt="شخليلة سوفت">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩٠٢.jpg" alt="شخليلة سوفت">
       </div>
       <div class="pcard-body">
         <h3>شخليلة سوفت</h3>
@@ -135,7 +145,7 @@
     <!-- منتج 5 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩١٨.jpg" alt="سجادة بيانو">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩١٨.jpg" alt="سجادة بيانو">
       </div>
       <div class="pcard-body">
         <h3>سجادة بيانو</h3>
@@ -147,7 +157,7 @@
     <!-- منتج 6 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩٣٢.jpg" alt="كور سيليكون 8 قطع">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩٣٢.jpg" alt="كور سيليكون 8 قطع">
       </div>
       <div class="pcard-body">
         <h3>كور سيليكون 8 قطع</h3>
@@ -159,7 +169,7 @@
     <!-- منتج 7 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٠٧.jpg" alt="شخليلة سوفت طويلة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٠٧.jpg" alt="شخليلة سوفت طويلة">
       </div>
       <div class="pcard-body">
         <h3>شخليلة سوفت طويلة</h3>
@@ -171,7 +181,7 @@
     <!-- منتج 8 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٣٠.jpg" alt="ريموت سيليكون">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٣٠.jpg" alt="ريموت سيليكون">
       </div>
       <div class="pcard-body">
         <h3>ريموت سيليكون</h3>
@@ -183,7 +193,7 @@
     <!-- منتج 9 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٤٧.jpg" alt="كروت أبيض وأسود">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٤٧.jpg" alt="كروت أبيض وأسود">
       </div>
       <div class="pcard-body">
         <h3>كروت أبيض وأسود</h3>
@@ -195,7 +205,7 @@
     <!-- منتج 10 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣١٠٩.jpg" alt="كتاب قماش">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣١٠٩.jpg" alt="كتاب قماش">
       </div>
       <div class="pcard-body">
         <h3>كتاب قماش</h3>
@@ -207,7 +217,7 @@
     <!-- منتج 11 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣١٢٠.jpg" alt="باونسر">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣١٢٠.jpg" alt="باونسر">
       </div>
       <div class="pcard-body">
         <h3>باونسر</h3>
@@ -219,7 +229,7 @@
     <!-- منتج 12 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٢٥٩.jpg" alt="مشاية وترابيزة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٢٥٩.jpg" alt="مشاية وترابيزة">
       </div>
       <div class="pcard-body">
         <h3>مشاية وترابيزة</h3>
@@ -231,7 +241,7 @@
     <!-- منتج 13 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٢٥.jpg" alt="رولي بولي">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٢٥.jpg" alt="رولي بولي">
       </div>
       <div class="pcard-body">
         <h3>رولي بولي</h3>
@@ -243,7 +253,7 @@
     <!-- منتج 14 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٣٣.jpg" alt="شبكة بط">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٣٣.jpg" alt="شبكة بط">
       </div>
       <div class="pcard-body">
         <h3>شبكة بط</h3>
@@ -255,7 +265,7 @@
     <!-- منتج 15 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٤٨.jpg" alt="كابوريا">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٤٨.jpg" alt="كابوريا">
       </div>
       <div class="pcard-body">
         <h3>كابوريا</h3>
@@ -267,7 +277,7 @@
     <!-- منتج 16 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٠٢.jpg" alt="قطار بطة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٠٢.jpg" alt="قطار بطة">
       </div>
       <div class="pcard-body">
         <h3>قطار بطة</h3>
@@ -279,7 +289,7 @@
     <!-- منتج 17 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٢٠.jpg" alt="باكت شخاليل 7 قطع">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٢٠.jpg" alt="باكت شخاليل 7 قطع">
       </div>
       <div class="pcard-body">
         <h3>باكت شخاليل 7 قطع</h3>
@@ -291,7 +301,7 @@
     <!-- منتج 18 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٤٤.jpg" alt="شخليلة سوفت رمادي">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٤٤.jpg" alt="شخليلة سوفت رمادي">
       </div>
       <div class="pcard-body">
         <h3>شخليلة سوفت رمادي</h3>
@@ -303,7 +313,7 @@
     <!-- منتج 19 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٥٣.jpg" alt="أساور يد بيبي">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٥٣.jpg" alt="أساور يد بيبي">
       </div>
       <div class="pcard-body">
         <h3>أساور يد بيبي</h3>
@@ -315,7 +325,7 @@
     <!-- منتج 20 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٠٧.jpg" alt="عمود حلقات بلاستيك">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٠٧.jpg" alt="عمود حلقات بلاستيك">
       </div>
       <div class="pcard-body">
         <h3>عمود حلقات بلاستيك</h3>
@@ -327,7 +337,7 @@
     <!-- منتج 21 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥١٤.jpg" alt="عضاضة فواكه">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥١٤.jpg" alt="عضاضة فواكه">
       </div>
       <div class="pcard-body">
         <h3>عضاضة فواكه</h3>
@@ -339,7 +349,7 @@
     <!-- منتج 22 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٢٣.jpg" alt="مطرقة مرحة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٢٣.jpg" alt="مطرقة مرحة">
       </div>
       <div class="pcard-body">
         <h3>مطرقة مرحة</h3>
@@ -351,7 +361,7 @@
     <!-- منتج 23 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٤٠.jpg" alt="سجادة فوم لوكس">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٤٠.jpg" alt="سجادة فوم لوكس">
       </div>
       <div class="pcard-body">
         <h3>سجادة فوم لوكس (١٨٠×٢٠٠ سم، سمك ١ سم)</h3>
@@ -363,7 +373,7 @@
     <!-- منتج 24 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٠٨.jpg" alt="برج تدحرج">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٠٨.jpg" alt="برج تدحرج">
       </div>
       <div class="pcard-body">
         <h3>برج تدحرج</h3>
@@ -375,7 +385,7 @@
     <!-- منتج 25 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٢٠.jpg" alt="بيض تطابق 6 قطع">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٢٠.jpg" alt="بيض تطابق 6 قطع">
       </div>
       <div class="pcard-body">
         <h3>بيض تطابق 6 قطع</h3>
@@ -387,7 +397,7 @@
     <!-- منتج 26 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٣٣.jpg" alt="بوكس شخاليل 11 قطعة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٣٣.jpg" alt="بوكس شخاليل 11 قطعة">
       </div>
       <div class="pcard-body">
         <h3>بوكس شخاليل 11 قطعة</h3>
@@ -399,7 +409,7 @@
     <!-- منتج 27 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٤٦.jpg" alt="ببرونة لعبة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٤٦.jpg" alt="ببرونة لعبة">
       </div>
       <div class="pcard-body">
         <h3>ببرونة لعبة</h3>
@@ -411,7 +421,7 @@
     <!-- منتج 28 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٥٨.jpg" alt="بيت كور مع 50 كرة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٥٨.jpg" alt="بيت كور مع 50 كرة">
       </div>
       <div class="pcard-body">
         <h3>بيت كور مع 50 كرة</h3>
@@ -423,7 +433,7 @@
     <!-- منتج 29 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧١٢.jpg" alt="عضاضة شكل فاكهة">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧١٢.jpg" alt="عضاضة شكل فاكهة">
       </div>
       <div class="pcard-body">
         <h3>عضاضة شكل فاكهة</h3>
@@ -435,7 +445,7 @@
     <!-- منتج 30 -->
     <div class="pcard">
       <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧٣٠.jpg" alt="عضاضة مائية">
+        <img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧٣٠.jpg" alt="عضاضة مائية">
       </div>
       <div class="pcard-body">
         <h3>عضاضة مائية</h3>
@@ -450,6 +460,21 @@
 <footer>
   <p>التميز ستور © 2026</p>
 </footer>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="صورة مكبرة">
+</div>
+
+<script>
+function openLightbox(src){
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('active');
+}
+</script>
 
 </body>
 </html>
