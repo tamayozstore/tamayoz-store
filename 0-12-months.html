@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ألعاب من 0 لـ 12 شهر - التميز ستور</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF5EC;
+    --coral:#E8876B;
+    --sage:#93AD82;
+    --sun:#F0C348;
+    --plum:#3E2E36;
+    --plum-soft:#6E5A61;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Tajawal', sans-serif;
+    background:var(--cream);
+    color:var(--plum);
+    line-height:1.6;
+  }
+  h1,h2,h3{ font-family:'Baloo 2', sans-serif; }
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:20px 6%; background:var(--cream);
+  }
+  .logo{ font-family:'Baloo 2'; font-weight:800; font-size:1.5rem; color:var(--coral); text-decoration:none; }
+  .logo span{ color:var(--sage); }
+  .back-btn{
+    color:var(--plum); text-decoration:none; font-weight:700;
+    font-size:0.95rem; background:#EADFD9; padding:8px 18px; border-radius:20px;
+  }
+  .header-section{ text-align:center; padding:30px 6% 20px; }
+  .header-section h1{ font-size:2rem; color:var(--plum); }
+  .header-section p{ color:var(--plum-soft); margin-top:8px; font-size:1rem; }
+
+  .products{ padding:20px 6% 50px; }
+  .products-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .pcard{
+    background:var(--card); border-radius:20px; overflow:hidden;
+    box-shadow:0 8px 20px rgba(62,46,54,0.07); display:flex; flex-direction:column;
+  }
+  .pcard-img{ height:180px; overflow:hidden; background:#FCE7D8; display:flex; align-items:center; justify-content:center; }
+  .pcard-img img{ width:100%; height:100%; object-fit:cover; }
+  .pcard-body{ padding:16px; text-align:center; }
+  .pcard-body h3{ font-size:1.1rem; font-weight:700; margin-bottom:8px; }
+  .pcard-body .price{ font-family:'Baloo 2'; font-weight:700; color:var(--coral); font-size:1.2rem; margin-bottom:12px; }
+  .order-btn{
+    display:inline-block; background:var(--coral); color:white;
+    padding:10px 20px; border-radius:30px; font-weight:700;
+    text-decoration:none; font-size:0.9rem; width:100%;
+  }
+
+  footer{
+    text-align:center; padding:28px 6%; font-size:0.85rem;
+    background:var(--plum); color:#EADFD9; margin-top:40px;
+  }
+
+  @media(max-width:800px){
+    .products-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media(max-width:500px){
+    .products-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">التميز <span>ستور</span></a>
+  <a href="index.html" class="back-btn">← الرجوع للرئيسية</a>
+</nav>
+
+<section class="header-section">
+  <h1>ألعاب من 0 لـ 12 شهر 👶</h1>
+  <p>ألعاب آمنة ومختارة بعناية لتنمية مهارات طفلك الحسية والحركية في عامه الأول</p>
+</section>
+
+<section class="products">
+  <div class="products-grid">
+
+    <!-- منتج 1 -->
+    <div class="pcard">
+      <div class="pcard-img">
+        <img src="IMG_٢٠٢٦٠٩٠١_٢١٥١٤٠.jpg" alt="سجادة مائية حسية">
+      </div>
+      <div class="pcard-body">
+        <h3>سجادة مائية حسية (دائرة)</h3>
+        <p class="price">٢٢٠ ج.م</p>
+        <a href="https://wa.me/201110715438?text=أريد%20طلب%20السجادة%20المائية%20الحسية" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>التميز ستور © 2026</p>
+</footer>
+
+</body>
+</html>
+
