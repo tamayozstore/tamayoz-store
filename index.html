@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ألعاب من 0 لـ 12 شهر - التميز ستور</title>
+<title>التميز ستور</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -22,433 +22,440 @@
     color:var(--plum);
     line-height:1.6;
   }
-  h1,h2,h3{ font-family:'Baloo 2', sans-serif; }
+  h1,h2,h3,.headline{ font-family:'Baloo 2', sans-serif; }
   nav{
     display:flex; justify-content:space-between; align-items:center;
-    padding:20px 6%; background:var(--cream);
+    padding:20px 6%;
+    background:var(--cream);
   }
-  .logo{ font-family:'Baloo 2'; font-weight:800; font-size:1.5rem; color:var(--coral); text-decoration:none; }
+  .logo{ font-family:'Baloo 2'; font-weight:800; font-size:1.5rem; color:var(--coral); }
   .logo span{ color:var(--sage); }
-  .back-btn{
-    color:var(--plum); text-decoration:none; font-weight:700;
-    font-size:0.95rem; background:#EADFD9; padding:8px 18px; border-radius:20px;
-  }
-  .header-section{ text-align:center; padding:30px 6% 20px; }
-  .header-section h1{ font-size:2rem; color:var(--plum); }
-  .header-section p{ color:var(--plum-soft); margin-top:8px; font-size:1rem; }
-
-  .products{ padding:20px 6% 50px; }
-  .products-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-  .pcard{
-    background:var(--card); border-radius:20px; overflow:hidden;
-    box-shadow:0 8px 20px rgba(62,46,54,0.07); display:flex; flex-direction:column;
-  }
-  .pcard-img{ height:180px; overflow:hidden; background:#FCE7D8; display:flex; align-items:center; justify-content:center; }
-  .pcard-img img{ width:100%; height:100%; object-fit:cover; }
-  .pcard-body{ padding:16px; text-align:center; }
-  .pcard-body h3{ font-size:1.1rem; font-weight:700; margin-bottom:8px; }
-  .pcard-body .price{ font-family:'Baloo 2'; font-weight:700; color:var(--coral); font-size:1.2rem; margin-bottom:12px; }
-  .old-price{ text-decoration:line-through; color:var(--plum-soft); font-size:0.85rem; font-weight:500; margin-inline-end:8px; }
-  .new-price{ color:var(--coral); font-weight:700; }
-  .order-btn{
+  nav .links{ display:flex; gap:28px; font-weight:500; font-size:0.95rem; }
+  nav .links a{ color:var(--plum); text-decoration:none; }
+  .btn{
     display:inline-block; background:var(--coral); color:white;
-    padding:10px 20px; border-radius:30px; font-weight:700;
-    text-decoration:none; font-size:0.9rem; width:100%;
+    padding:14px 30px; border-radius:40px; font-weight:700;
+    text-decoration:none; font-size:1rem;
+    box-shadow:0 6px 0 #C96B4F;
   }
+  .hero{
+    display:flex; align-items:center; gap:40px;
+    padding:30px 6% 50px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-text{ flex:1; max-width:520px; }
+  .hero-text h1{
+    font-size:2.4rem; font-weight:800; line-height:1.25;
+    color:var(--plum);
+  }
+  .hero-text h1 em{ font-style:normal; color:var(--coral); }
+  .hero-text p{
+    margin:16px 0 22px; font-size:1.02rem; color:var(--plum-soft); max-width:430px;
+  }
+  .hero-visual{
+    flex:1; display:flex; justify-content:center; align-items:center;
+    position:relative; height:280px;
+  }
+  .blob{
+    position:absolute; width:230px; height:230px; border-radius:50%;
+    background:var(--sun); opacity:0.35;
+  }
+  .toy-circle{
+    width:190px; height:190px; border-radius:50%;
+    background:var(--card); display:flex; align-items:center; justify-content:center;
+    font-size:4.2rem; z-index:2; box-shadow:0 10px 30px rgba(62,46,54,0.12);
+  }
+  .float{ position:absolute; font-size:2rem; z-index:3; }
+  .f1{ top:5px; right:20px; }
+  .f2{ bottom:15px; left:5px; }
+  .f3{ top:45%; right:0; }
+
+  .section-head{ text-align:center; margin-bottom:32px; }
+  .section-head h2{ font-size:1.8rem; color:var(--plum); }
+  .section-head p{ color:var(--plum-soft); margin-top:6px; font-size:0.95rem; }
+
+  .featured{ padding:10px 6% 50px; }
+  .featured-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .fcard{
+    background:var(--card); border-radius:20px; overflow:hidden;
+    box-shadow:0 8px 20px rgba(62,46,54,0.07);
+    display:flex; flex-direction:column;
+  }
+  .fcard-img{
+    height:130px; display:flex; align-items:center; justify-content:center;
+    font-size:3.2rem; overflow:hidden;
+  }
+  .fcard-img img{ width:100%; height:100%; object-fit:cover; }
+  .fbg1{ background:#D7ECF7; }
+  .fbg2{ background:#FCE7D8; }
+  .fbg3{ background:#F6DDEE; }
+  .fbg4{ background:#E4EEDF; }
+  .fbg5{ background:#FBF0D4; }
+  .fbg6{ background:#DCE8F5; }
+  .fcard-body{ padding:12px 14px 16px; text-align:center; }
+  .fcard-body h3{ font-size:0.9rem; font-weight:700; margin-bottom:6px; }
+  .fcard-body .fprice{ font-family:'Baloo 2'; font-weight:700; color:var(--coral); font-size:1rem; }
+
+  .ages{ padding:10px 6% 50px; }
+  .ages-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .age-card{
+    display:block; text-decoration:none; color:var(--plum);
+    border-radius:20px; padding:26px 14px; text-align:center;
+    box-shadow:0 8px 20px rgba(62,46,54,0.07);
+    transition:transform 0.15s ease;
+  }
+  .age-card:active{ transform:scale(0.97); }
+  .age-bg1{ background:#FCE7D8; }
+  .age-bg2{ background:#E4EEDF; }
+  .age-bg3{ background:#FBF0D4; }
+  .age-bg4{ background:#EAD9F0; }
+  .age-card .icon{ font-size:2.2rem; margin-bottom:10px; }
+  .age-card .label{ font-weight:700; font-size:0.95rem; }
+
+  .trust{
+    display:flex; justify-content:center; gap:50px; flex-wrap:wrap;
+    padding:26px 6%; background:#F1E8DA;
+  }
+  .trust-item{ text-align:center; font-size:0.85rem; color:var(--plum-soft); font-weight:500; }
+  .trust-item span{ display:block; font-size:1.5rem; margin-bottom:6px; }
+
+  .shipping{ padding:50px 6%; background:var(--cream); }
+  .shipping-table{
+    max-width:700px; margin:0 auto; background:var(--card);
+    border-radius:22px; overflow:hidden; box-shadow:0 8px 24px rgba(62,46,54,0.08);
+  }
+  .ship-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 24px; border-bottom:1px solid #F1E8DA;
+  }
+  .ship-row:last-child{ border-bottom:none; }
+  .ship-area{ font-weight:700; font-size:0.95rem; }
+  .ship-sub{ font-size:0.78rem; color:var(--plum-soft); margin-top:3px; }
+  .ship-price{ font-family:'Baloo 2'; font-weight:700; color:var(--coral); font-size:1.05rem; white-space:nowrap; }
+
+  .cta{ text-align:center; padding:60px 6%; }
+  .cta h2{ font-size:1.7rem; margin-bottom:12px; }
+  .cta p{ color:var(--plum-soft); margin-bottom:22px; }
 
   footer{
     text-align:center; padding:28px 6%; font-size:0.85rem;
-    background:var(--plum); color:#EADFD9; margin-top:40px;
+    background:var(--plum); color:#EADFD9;
   }
+  footer .logo2{ font-family:'Baloo 2'; color:var(--sun); font-weight:800; }
+  .social{ display:flex; justify-content:center; gap:20px; margin:14px 0; }
+  .social a{ color:#EADFD9; text-decoration:none; font-size:0.88rem; font-weight:500; }
 
   @media(max-width:800px){
-    .products-grid{ grid-template-columns:repeat(2,1fr); }
-  }
-  @media(max-width:500px){
-    .products-grid{ grid-template-columns:1fr; }
+    .hero{ flex-direction:column; text-align:center; padding-top:15px;}
+    .hero-text{ max-width:100%; }
+    .hero-text p{ margin-left:auto; margin-right:auto; }
+    nav .links{ display:none; }
+    .featured-grid{ grid-template-columns:repeat(2,1fr); }
+    .ages-grid{ grid-template-columns:repeat(2,1fr); }
+    .ship-row{ padding:14px 16px; }
   }
 </style>
 </head>
+
 <body>
 
 <nav>
-  <a href="../index.html" class="logo">التميز <span>ستور</span></a>
-  <a href="../index.html" class="back-btn">← الرجوع للرئيسية</a>
+  <div class="logo">التميز <span>ستور</span></div>
+
+  <div class="links">
+    <a href="#featured">عروض مميزة</a>
+    <a href="#ages">الفئات العمرية</a>
+    <a href="https://wa.me/201110715438" target="_blank">تواصل معنا</a>
+  </div>
+
+  <a href="https://wa.me/201110715438" target="_blank" class="btn" style="padding:10px 22px; font-size:0.85rem;">
+    اطلبي الآن
+  </a>
 </nav>
 
-<section class="header-section">
-  <h1>ألعاب من 0 لـ 12 شهر 👶</h1>
-  <p>ألعاب آمنة ومختارة بعناية لتنمية مهارات طفلك الحسية والحركية في عامه الأول</p>
+<section class="hero">
+
+  <div class="hero-text">
+
+    <h1>
+      ألعاب بتنمّي <em>خيال</em> طفلك، من غير ما تحسي إنه بيتعلم
+    </h1>
+
+    <p>
+      ألعاب مونتيسوري آمنة ومختارة بعناية لكل مرحلة عمرية، من صفر لحد 11 سنة.
+    </p>
+
+    <a href="#ages" class="btn">
+      شوفي المنتجات
+    </a>
+
+  </div>
+
+  <div class="hero-visual">
+
+    <div class="blob"></div>
+    <div class="float f1">🧸</div>
+    <div class="float f2">🪀</div>
+    <div class="float f3">⭐</div>
+    <div class="toy-circle">🐟</div>
+
+  </div>
+
 </section>
 
-<section class="products">
-  <div class="products-grid">
+<section class="featured" id="featured">
 
-    <!-- منتج 1 -->
-    <div class="pcard">
-      <div class="pcard-img">
+  <div class="section-head">
+    <h2>عروض مميزة</h2>
+    <p>أشهر المنتجات وأفضل العروض عندنا دلوقتي</p>
+  </div>
+
+  <div class="featured-grid">
+
+    <div class="fcard">
+      <div class="fcard-img fbg1">
         <img src="IMG_٢٠٢٦٠٩٠١_٢١٥١٤٠.jpg" alt="سجادة مائية حسية">
       </div>
-      <div class="pcard-body">
+      <div class="fcard-body">
         <h3>سجادة مائية حسية (دائرة)</h3>
-        <p class="price"><span class="new-price">٢٢٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20السجادة%20المائية%20الحسية" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
+        <p class="fprice">٢٢٠ ج.م</p>
       </div>
     </div>
 
-    <!-- منتج 2 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٨١٧_٢١٣٦٤٥.png" alt="باكت شخاليل 10 قطع">
+    <div class="fcard">
+      <div class="fcard-img fbg2">
+        <img src="IMG_٢٠٢٦٠٩٠١_٢١٥١٢٨.jpg" alt="مكعبات بناء 1000 قطعة">
       </div>
-      <div class="pcard-body">
-        <h3>باكت شخاليل 10 قطع</h3>
-        <p class="price"><span class="old-price">٢٩٠ ج.م</span><span class="new-price">٢٤٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20باكت%20شخاليل%2010%20قطع" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
+      <div class="fcard-body">
+        <h3>مكعبات بناء ١٠٠٠ قطعة</h3>
+        <p class="fprice">٦٠٠ ج.م</p>
       </div>
     </div>
 
-    <!-- منتج 3 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٨٤٧.jpg" alt="فيل صوت ونور">
+    <div class="fcard">
+      <div class="fcard-img fbg3">
+        <img src="IMG_٢٠٢٦٠٩٠١_٢١٥١٠١.jpg" alt="بوتي سلم لتدريب الحمام">
       </div>
-      <div class="pcard-body">
-        <h3>فيل صوت ونور</h3>
-        <p class="price"><span class="old-price">١٩٠ ج.م</span><span class="new-price">١٥٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20فيل%20صوت%20ونور" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
+      <div class="fcard-body">
+        <h3>بوتي سلم لتدريب الحمام</h3>
+        <p class="fprice">٦٠٠ ج.م</p>
       </div>
     </div>
 
-    <!-- منتج 4 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩٠٢.jpg" alt="شخليلة سوفت">
+    <div class="fcard">
+      <div class="fcard-img fbg4">
+        <img src="IMG_٢٠٢٦٠٩٠١_٢١٥٠٥٢.jpg" alt="بوكس خرز للإكسسوارات">
       </div>
-      <div class="pcard-body">
-        <h3>شخليلة سوفت</h3>
-        <p class="price"><span class="old-price">١٣٠ ج.م</span><span class="new-price">١٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20شخليلة%20سوفت" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
+      <div class="fcard-body">
+        <h3>بوكس خرز للإكسسوارات</h3>
+        <p class="fprice">٢٢٠ ج.م</p>
       </div>
     </div>
 
-    <!-- منتج 5 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩١٨.jpg" alt="سجادة بيانو">
+    <div class="fcard">
+      <div class="fcard-img fbg5">
+        <img src="IMG_٢٠٢٦٠٩٠١_٢١٥٠٣٩.jpg" alt="صلصال فوم">
       </div>
-      <div class="pcard-body">
-        <h3>سجادة بيانو</h3>
-        <p class="price"><span class="old-price">٦٥٠ ج.م</span><span class="new-price">٦٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20سجادة%20بيانو" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
+      <div class="fcard-body">
+        <h3>صلصال فوم (١٢ قطعة)</h3>
+        <p class="fprice">٥٠ ج.م</p>
       </div>
     </div>
 
-    <!-- منتج 6 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٢٩٣٢.jpg" alt="كور سيليكون 8 قطع">
+    <div class="fcard">
+      <div class="fcard-img fbg6">
+        <img src="IMG_٢٠٢٦٠٩٠١_٢١٥٠٢٦.jpg" alt="بيت كور حيوانات وكور">
       </div>
-      <div class="pcard-body">
-        <h3>كور سيليكون 8 قطع</h3>
-        <p class="price"><span class="new-price">٤٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20كور%20سيليكون" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 7 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٠٧.jpg" alt="شخليلة سوفت طويلة">
-      </div>
-      <div class="pcard-body">
-        <h3>شخليلة سوفت طويلة</h3>
-        <p class="price"><span class="old-price">١٥٠ ج.م</span><span class="new-price">١٢٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20شخليلة%20سوفت%20طويلة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 8 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٣٠.jpg" alt="ريموت سيليكون">
-      </div>
-      <div class="pcard-body">
-        <h3>ريموت سيليكون</h3>
-        <p class="price"><span class="old-price">٢٢٠ ج.م</span><span class="new-price">١٨٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20ريموت%20سيليكون" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 9 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٠٤٧.jpg" alt="كروت أبيض وأسود">
-      </div>
-      <div class="pcard-body">
-        <h3>كروت أبيض وأسود</h3>
-        <p class="price"><span class="old-price">١٨٠ ج.م</span><span class="new-price">١٥٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20كروت%20أبيض%20وأسود" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 10 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣١٠٩.jpg" alt="كتاب قماش">
-      </div>
-      <div class="pcard-body">
-        <h3>كتاب قماش</h3>
-        <p class="price"><span class="old-price">٧٥ ج.م</span><span class="new-price">٥٥ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20كتاب%20قماش" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 11 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣١٢٠.jpg" alt="باونسر">
-      </div>
-      <div class="pcard-body">
-        <h3>باونسر</h3>
-        <p class="price"><span class="old-price">١٥٠٠ ج.م</span><span class="new-price">١٣٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20باونسر" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 12 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٢٥٩.jpg" alt="مشاية وترابيزة">
-      </div>
-      <div class="pcard-body">
-        <h3>مشاية وترابيزة</h3>
-        <p class="price"><span class="old-price">١٥٠٠ ج.م</span><span class="new-price">١٣٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20مشاية%20وترابيزة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 13 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٢٥.jpg" alt="رولي بولي">
-      </div>
-      <div class="pcard-body">
-        <h3>رولي بولي</h3>
-        <p class="price"><span class="old-price">٢٢٠ ج.م</span><span class="new-price">١٨٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20رولي%20بولي" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 14 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٣٣.jpg" alt="شبكة بط">
-      </div>
-      <div class="pcard-body">
-        <h3>شبكة بط</h3>
-        <p class="price"><span class="old-price">٦٠ ج.م</span><span class="new-price">٤٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20شبكة%20بط" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 15 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٣٤٨.jpg" alt="كابوريا">
-      </div>
-      <div class="pcard-body">
-        <h3>كابوريا</h3>
-        <p class="price"><span class="old-price">٢٢٠ ج.م</span><span class="new-price">١٨٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20كابوريا" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 16 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٠٢.jpg" alt="قطار بطة">
-      </div>
-      <div class="pcard-body">
-        <h3>قطار بطة</h3>
-        <p class="price"><span class="old-price">٢٢٠ ج.م</span><span class="new-price">١٨٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20قطار%20بطة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 17 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٢٠.jpg" alt="باكت شخاليل 7 قطع">
-      </div>
-      <div class="pcard-body">
-        <h3>باكت شخاليل 7 قطع</h3>
-        <p class="price"><span class="old-price">٢٤٠ ج.م</span><span class="new-price">٢٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20باكت%20شخاليل%207%20قطع" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 18 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٤٤.jpg" alt="شخليلة سوفت رمادي">
-      </div>
-      <div class="pcard-body">
-        <h3>شخليلة سوفت رمادي</h3>
-        <p class="price"><span class="old-price">١٣٠ ج.م</span><span class="new-price">١٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20شخليلة%20سوفت%20رمادي" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 19 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٥٣.jpg" alt="أساور يد بيبي">
-      </div>
-      <div class="pcard-body">
-        <h3>أساور يد بيبي</h3>
-        <p class="price"><span class="old-price">١٧٠ ج.م</span><span class="new-price">١٤٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20أساور%20يد%20بيبي" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 20 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٠٧.jpg" alt="عمود حلقات بلاستيك">
-      </div>
-      <div class="pcard-body">
-        <h3>عمود حلقات بلاستيك</h3>
-        <p class="price"><span class="old-price">١٥٠ ج.م</span><span class="new-price">١٢٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20عمود%20حلقات%20بلاستيك" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 21 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥١٤.jpg" alt="عضاضة فواكه">
-      </div>
-      <div class="pcard-body">
-        <h3>عضاضة فواكه</h3>
-        <p class="price"><span class="old-price">٩٠ ج.م</span><span class="new-price">٧٥ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20عضاضة%20فواكه" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 22 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٢٣.jpg" alt="مطرقة مرحة">
-      </div>
-      <div class="pcard-body">
-        <h3>مطرقة مرحة</h3>
-        <p class="price"><span class="old-price">٣٠٠ ج.م</span><span class="new-price">٢٧٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20مطرقة%20مرحة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 23 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٤٠.jpg" alt="سجادة فوم لوكس">
-      </div>
-      <div class="pcard-body">
-        <h3>سجادة فوم لوكس (١٨٠×٢٠٠ سم، سمك ١ سم)</h3>
-        <p class="price"><span class="new-price">٨٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20سجادة%20فوم%20لوكس" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 24 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٠٨.jpg" alt="برج تدحرج">
-      </div>
-      <div class="pcard-body">
-        <h3>برج تدحرج</h3>
-        <p class="price"><span class="old-price">٢٦٠ ج.م</span><span class="new-price">٢٣٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20برج%20تدحرج" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 25 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٢٠.jpg" alt="بيض تطابق 6 قطع">
-      </div>
-      <div class="pcard-body">
-        <h3>بيض تطابق 6 قطع</h3>
-        <p class="price"><span class="old-price">١٥٠ ج.م</span><span class="new-price">١٢٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20بيض%20تطابق" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 26 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٣٣.jpg" alt="بوكس شخاليل 11 قطعة">
-      </div>
-      <div class="pcard-body">
-        <h3>بوكس شخاليل 11 قطعة</h3>
-        <p class="price"><span class="old-price">٣٣٠ ج.م</span><span class="new-price">٣٠٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20بوكس%20شخاليل%2011%20قطعة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 27 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٤٦.jpg" alt="ببرونة لعبة">
-      </div>
-      <div class="pcard-body">
-        <h3>ببرونة لعبة</h3>
-        <p class="price"><span class="old-price">٢٦٠ ج.م</span><span class="new-price">٢٣٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20ببرونة%20لعبة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 28 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٥٨.jpg" alt="بيت كور مع 50 كرة">
-      </div>
-      <div class="pcard-body">
-        <h3>بيت كور مع 50 كرة</h3>
-        <p class="price"><span class="old-price">٦٠٠ ج.م</span><span class="new-price">٥٢٠ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20بيت%20كور%20مع%2050%20كرة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 29 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧١٢.jpg" alt="عضاضة شكل فاكهة">
-      </div>
-      <div class="pcard-body">
-        <h3>عضاضة شكل فاكهة</h3>
-        <p class="price"><span class="old-price">٩٠ ج.م</span><span class="new-price">٧٥ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20عضاضة%20شكل%20فاكهة" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
-      </div>
-    </div>
-
-    <!-- منتج 30 -->
-    <div class="pcard">
-      <div class="pcard-img">
-        <img src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧٣٠.jpg" alt="عضاضة مائية">
-      </div>
-      <div class="pcard-body">
-        <h3>عضاضة مائية</h3>
-        <p class="price"><span class="old-price">٨٥ ج.م</span><span class="new-price">٦٥ ج.م</span></p>
-        <a href="https://wa.me/201110715438?text=أريد%20طلب%20عضاضة%20مائية" target="_blank" class="order-btn">اطلبي عبر واتساب</a>
+      <div class="fcard-body">
+        <h3>بيت كور حيوانات + ٥٠ كرة</h3>
+        <p class="fprice">٥٢٠ ج.م</p>
       </div>
     </div>
 
   </div>
+
+</section>
+
+<section class="ages" id="ages">
+
+  <div class="section-head">
+    <h2>اختاري سن طفلك</h2>
+    <p>هنوريكي أنسب الألعاب لمرحلة نمو طفلك</p>
+  </div>
+
+  <div class="ages-grid">
+
+    <a href="0-12-months.html" class="age-card age-bg1">
+      <div class="icon">👶</div>
+      <div class="label">من 0 لـ 12 شهر</div>
+    </a>
+
+    <a href="1-2-5-years.html" class="age-card age-bg2">
+      <div class="icon">🧸</div>
+      <div class="label">من سنة لسنتين ونص</div>
+    </a>
+
+    <a href="3-5-years.html" class="age-card age-bg3">
+      <div class="icon">🎨</div>
+      <div class="label">من 3 لـ 5 سنين</div>
+    </a>
+
+    <a href="6-11-years.html" class="age-card age-bg4">
+      <div class="icon">🎒</div>
+      <div class="label">من 6 لـ 11 سنة</div>
+    </a>
+
+  </div>
+
+</section>
+
+<div class="trust">
+
+  <div class="trust-item">
+    <span>🚚</span>
+    شحن لكل المحافظات
+  </div>
+
+  <div class="trust-item">
+    <span>💵</span>
+    الدفع عند الاستلام
+  </div>
+
+  <div class="trust-item">
+    <span>👀</span>
+    معاينة المنتج عند الاستلام
+  </div>
+
+  <div class="trust-item">
+    <span>✅</span>
+    خامات آمنة 100%
+  </div>
+
+</div>
+
+<section class="shipping">
+
+  <div class="section-head">
+    <h2>أسعار الشحن</h2>
+    <p>الشحن لكل محافظات مصر</p>
+  </div>
+
+  <div class="shipping-table">
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">القاهرة والجيزة</div>
+      </div>
+      <div class="ship-price">٧٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">الوجه البحري</div>
+        <div class="ship-sub">
+          القليوبية، إسكندرية، دمياط، الدقهلية، بورسعيد، الإسماعيلية، السويس، الغربية، المنوفية، الشرقية، كفر الشيخ
+        </div>
+      </div>
+      <div class="ship-price">٨٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">البحيرة</div>
+      </div>
+      <div class="ship-price">٩٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">الوجه القبلي</div>
+        <div class="ship-sub">
+          أسيوط، بني سويف، الفيوم، المنيا، سوهاج، قنا، أسوان، الأقصر
+        </div>
+      </div>
+      <div class="ship-price">٩٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">الوادي الجديد</div>
+      </div>
+      <div class="ship-price">١١٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">الغردقة</div>
+      </div>
+      <div class="ship-price">١١٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">مطروح</div>
+      </div>
+      <div class="ship-price">١٤٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">شمال وجنوب سيناء</div>
+      </div>
+      <div class="ship-price">١٥٠ ج.م</div>
+    </div>
+
+    <div class="ship-row">
+      <div>
+        <div class="ship-area">شرم الشيخ</div>
+      </div>
+      <div class="ship-price">١٦٠ ج.م</div>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="cta">
+
+  <h2>لسه مقررتيش؟ كلمينا دلوقتي</h2>
+
+  <p>
+    فريقنا جاهز يساعدك تختاري الأنسب لعمر طفلك
+  </p>
+
+  <a href="https://wa.me/201110715438" target="_blank" class="btn">
+    راسلينا على واتساب
+  </a>
+
 </section>
 
 <footer>
-  <p>التميز ستور © 2026</p>
+
+  <div class="logo2">
+    التميز ستور
+  </div>
+
+  <div class="social">
+
+    <a href="https://www.facebook.com/share/1JjSEbzH4u/" target="_blank">
+      فيسبوك
+    </a>
+
+    <a href="https://www.instagram.com/al_tamayoz_store" target="_blank">
+      إنستجرام
+    </a>
+
+    <a href="https://wa.me/201110715438" target="_blank">
+      واتساب
+    </a>
+
+  </div>
+
+  <p style="margin-top:10px;">
+    جميع الحقوق محفوظة © 2026
+  </p>
+
 </footer>
 
 </body>
