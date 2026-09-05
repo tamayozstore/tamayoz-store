@@ -127,10 +127,10 @@ function randomStoragePath() {
 function friendlyStorageError(error) {
   const text = String(error?.message || error || "");
   if (/bucket.*not found/i.test(text) || /not found.*bucket/i.test(text)) {
-    return new Error("مساحة الصور في Supabase (products bucket) مش موجودة. شغّل ملف RUN-THIS-ONCE-FIX.sql مرة واحدة من Supabase > SQL Editor، وبعدها اعمل Refresh للوحة الأدمن.");
+    return new Error("مساحة الصور في Supabase (products bucket) مش موجودة. شغّل ملف RUN-THIS-NOW-SAFE.sql مرة واحدة من Supabase > SQL Editor، وبعدها اعمل Refresh للوحة الأدمن.");
   }
   if (/row-level security|rls|policy|permission|unauthorized|forbidden/i.test(text)) {
-    return new Error("مساحة الصور موجودة لكن صلاحيات Storage ناقصة. شغّل RUN-THIS-ONCE-FIX.sql مرة واحدة من Supabase > SQL Editor.");
+    return new Error("مساحة الصور موجودة لكن صلاحيات Storage ناقصة. شغّل RUN-THIS-NOW-SAFE.sql مرة واحدة من Supabase > SQL Editor.");
   }
   return error instanceof Error ? error : new Error(text || "خطأ في Supabase Storage");
 }
@@ -502,6 +502,82 @@ async function migrateLegacyImages() {
     await loadAdminProducts();
   } finally {
     button.disabled = false;
+  }
+}
+
+
+function legacyCatalogRows() {
+  const source = Array.isArray(window.TAMAYOZ_FALLBACK_PRODUCTS) ? window.TAMAYOZ_FALLBACK_PRODUCTS : [];
+  return source
+    .filter((product) => product && product.name && product.image_url)
+    .map((product, index) => ({
+      sku: product.sku || `legacy-import-${String(index + 1).padStart(3, "0")}`,
+      name: String(product.name).trim(),
+      price: Math.max(0, Number(product.price || 0)),
+      old_price: product.old_price == null || product.old_price === "" ? null : Math.max(0, Number(product.old_price || 0)),
+      category: normalizeCategoryKey(product.category),
+      image_url: String(product.image_url).trim(),
+      description: String(product.description || ""),
+      featured: Boolean(product.featured),
+      active: product.active !== false,
+      in_stock: product.in_stock !== false,
+      sort_order: Number.isFinite(Number(product.sort_order)) ? Number(product.sort_order) : index + 1
+    }));
+}
+
+async function syncLegacyProducts() {
+  clearMessage("legacy-products-message");
+  const button = document.getElementById("sync-legacy-products-btn");
+  if (button) button.disabled = true;
+
+  try {
+    const catalog = legacyCatalogRows();
+    if (!catalog.length) throw new Error("ملف بيانات المنتجات القديمة غير محمّل.");
+
+    setMessage("legacy-products-message", "جاري فحص المنتجات الموجودة في Supabase...");
+    const { data: existing, error: readError } = await window.storeDb
+      .from("products")
+      .select("sku,name,category,image_url");
+    if (readError) {
+      if (/relation .*products.* does not exist|could not find the table|schema cache/i.test(String(readError.message || ""))) {
+        throw new Error("جدول products لسه مش موجود. شغّل RUN-THIS-NOW-SAFE.sql الأول ثم اعمل Refresh.");
+      }
+      throw readError;
+    }
+
+    const existingSkus = new Set((existing || []).map((row) => String(row.sku || "").trim()).filter(Boolean));
+    const existingCategoryNames = new Set((existing || []).map((row) => `${normalizeCategoryKey(row.category)}|${String(row.name || "").trim().toLocaleLowerCase("ar")}`));
+
+    const missing = catalog.filter((row) => {
+      if (row.sku && existingSkus.has(String(row.sku))) return false;
+      const categoryName = `${normalizeCategoryKey(row.category)}|${String(row.name || "").trim().toLocaleLowerCase("ar")}`;
+      return !existingCategoryNames.has(categoryName);
+    });
+
+    if (!missing.length) {
+      setMessage("legacy-products-message", `كل بيانات المنتجات القديمة موجودة بالفعل ✅ (${catalog.length.toLocaleString("ar-EG")} منتج في الكتالوج القديم).`);
+      return;
+    }
+
+    let inserted = 0;
+    const chunkSize = 50;
+    for (let i = 0; i < missing.length; i += chunkSize) {
+      const chunk = missing.slice(i, i + chunkSize);
+      setMessage("legacy-products-message", `جاري استيراد ${Math.min(i + chunk.length, missing.length)} من ${missing.length} منتج ناقص...`);
+      const { error } = await window.storeDb.from("products").insert(chunk);
+      if (error) throw error;
+      inserted += chunk.length;
+    }
+
+    await loadAdminProducts();
+    setMessage("legacy-products-message", `تم استيراد ${inserted.toLocaleString("ar-EG")} منتج قديم ناقص ✅ الصور فضلت في GitHub ومترفعتش من جديد.`);
+    showToast(`تم استرجاع ${inserted.toLocaleString("ar-EG")} منتج قديم`);
+  } catch (error) {
+    console.error(error);
+    setMessage("legacy-products-message", error.message || String(error), "error");
+    showToast(error.message || "تعذر استيراد المنتجات القديمة", "error");
+  } finally {
+    if (button) button.disabled = false;
   }
 }
 
@@ -1319,6 +1395,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("upload-store-logo-btn")?.addEventListener("click", uploadStoreLogo);
   document.getElementById("legacy-files")?.addEventListener("change", () => clearMessage("legacy-message"));
   document.getElementById("migrate-legacy-btn")?.addEventListener("click", migrateLegacyImages);
+  document.getElementById("sync-legacy-products-btn")?.addEventListener("click", syncLegacyProducts);
   document.getElementById("batch-files")?.addEventListener("change", (event) => handleBatchFiles(event.target.files));
   document.getElementById("batch-default-category")?.addEventListener("change", (event) => {
     batchDrafts.forEach((draft) => draft.category = normalizeCategoryKey(event.target.value));

@@ -65,7 +65,33 @@ async function fetchProducts(filters = {}) {
 
     const { data, error } = await query;
     if (error) throw error;
-    return data || [];
+
+    const rows = data || [];
+    const fallback = fallbackProducts(filters);
+
+    // لو قاعدة البيانات اتعملت جديد ولسه المنتجات القديمة ما اتعملهاش import،
+    // ما نخليش الفئة تظهر فاضية: نعرض داتا GitHub القديمة مؤقتًا بجانب أي منتجات جديدة.
+    if (filters.category && fallback.length) {
+      const normalized = normalizeStoreCategory(filters.category);
+      const legacyPrefix = `legacy-${normalized}-`;
+      const dbAlreadyOwnsLegacyCatalog = rows.some((product) => String(product.sku || "").startsWith(legacyPrefix));
+
+      if (!dbAlreadyOwnsLegacyCatalog) {
+        const seen = new Set(rows.map((product) => String(product.sku || `${product.name}|${product.image_url}`)));
+        const missingFallback = fallback.filter((product) => {
+          const key = String(product.sku || `${product.name}|${product.image_url}`);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        const merged = [...rows, ...missingFallback];
+        merged.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+        return filters.limit ? merged.slice(0, filters.limit) : merged;
+      }
+    }
+
+    if (!rows.length && fallback.length) return fallback;
+    return rows;
   } catch (error) {
     console.error("Products fetch failed; using fallback:", error);
     return fallbackProducts(filters);

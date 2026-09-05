@@ -330,6 +330,13 @@
             <button class="admin-btn secondary" id="migrate-legacy-btn" type="button">نقل وربط كل الصور القديمة</button>
             <div id="legacy-message" class="status-message"></div>
           </article>
+
+          <article class="admin-card media-card-pro">
+            <div class="card-icon-title"><span>↺</span><div><h3>استرجاع بيانات المنتجات القديمة</h3><p>يضيف المنتجات القديمة الناقصة إلى Supabase من غير رفع الصور ومن غير استبدال منتجات موجودة.</p></div></div>
+            <p class="muted-text">استخدمه مرة واحدة بعد تشغيل ملف الإصلاح. صور المنتجات تفضل في GitHub زي ما هي، وبعد الاستيراد تقدر تحدد المنتجات وتعدلها أو تحذفها من إدارة المنتجات.</p>
+            <button class="admin-btn secondary" id="sync-legacy-products-btn" type="button">استيراد المنتجات القديمة الناقصة</button>
+            <div id="legacy-products-message" class="status-message"></div>
+          </article>
         </div>
       </section>
 
@@ -474,6 +481,7 @@
 
   <script src="config.js"></script>
   <script src="supabase-client.js"></script>
+  <script src="products-fallback.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
