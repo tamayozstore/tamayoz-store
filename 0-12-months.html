@@ -403,4 +403,110 @@
       <div class="pcard-body">
         <h3>ببرونة لعبة</h3>
         <p class="price"><span class="old-price">260 ج.م</span><span class="new-price">230 ج.م</span></p>
-        <button class="order-btn" on
+        <button class="order-btn" onclick="addToCart('ببرونة لعبة', 230, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٤٦.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 28 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٥٨.jpg" alt="بيت كور مع 50 كرة"></div>
+      <div class="pcard-body">
+        <h3>بيت كور مع 50 كرة</h3>
+        <p class="price"><span class="old-price">600 ج.م</span><span class="new-price">520 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('بيت كور مع 50 كرة', 520, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٥٨.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 29 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧١٢.jpg" alt="عضاضة شكل فاكهة"></div>
+      <div class="pcard-body">
+        <h3>عضاضة شكل فاكهة</h3>
+        <p class="price"><span class="old-price">90 ج.م</span><span class="new-price">75 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('عضاضة شكل فاكهة', 75, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٧١٢.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 30 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٧٣٠.jpg" alt="عضاضة مائية"></div>
+      <div class="pcard-body">
+        <h3>عضاضة مائية</h3>
+        <p class="price"><span class="old-price">85 ج.م</span><span class="new-price">65 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('عضاضة مائية', 65, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٧٣٠.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- السلة الجانبية والفاتورة -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <h3>سلة المشتريات</h3>
+    <button class="close-cart" onclick="closeCart()">✕</button>
+  </div>
+  
+  <div class="cart-items" id="cart-items"></div>
+
+  <div class="cart-checkout">
+    <div class="form-group">
+      <label>الاسم بالكامل:</label>
+      <input type="text" id="cust-name" placeholder="اكتبي اسمك هنا">
+    </div>
+    <div class="form-group">
+      <label>رقم الموبايل:</label>
+      <input type="tel" id="cust-phone" placeholder="01xxxxxxxxx">
+    </div>
+    <div class="form-group">
+      <label>منطقة الشحن:</label>
+      <select id="shipping-zone">
+        <option value="">-- اختاري المحافظة/المنطقة --</option>
+        <option value="cairo_giza">القاهرة والجيزة (70 ج.م)</option>
+        <option value="bahary">الوجه البحري والقناة (80 ج.م)</option>
+        <option value="beheira">البحيرة (90 ج.م)</option>
+        <option value="qebly">الوجه القبلي والصعيد (90 ج.م)</option>
+        <option value="new_valley">الوادي الجديد (110 ج.م)</option>
+        <option value="hurghada">الغردقة (110 ج.م)</option>
+        <option value="matrouh">مطروح (140 ج.م)</option>
+        <option value="sinai">شمال وجنوب سيناء (150 ج.م)</option>
+        <option value="sharm">شرم الشيخ (160 ج.م)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>العنوان بالتفصيل:</label>
+      <input type="text" id="cust-address" placeholder="الشارع، رقم العمارة والشقة، علامة مميزة">
+    </div>
+
+    <div class="bill-row"><span>المجموع:</span><span id="cart-subtotal">0 ج.م</span></div>
+    <div class="bill-row"><span>الشحن:</span><span id="cart-shipping">0 ج.م</span></div>
+    <div class="bill-row bill-total"><span>الإجمالي:</span><span id="cart-total">0 ج.م</span></div>
+
+    <button class="whatsapp-submit" onclick="checkoutWhatsApp()">تأكيد الطلب عبر واتساب 💬</button>
+  </div>
+</div>
+
+<footer>
+  <img src="logo.png" alt="التميز ستور"><br>
+  <p>التميز ستور © 2026</p>
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="صورة مكبرة">
+</div>
+
+<script src="cart.js"></script>
+<script>
+function openLightbox(src){
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('active');
+}
+</script>
+
+</body>
+</html>
