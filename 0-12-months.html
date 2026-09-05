@@ -287,76 +287,120 @@
       </div>
     </div>
 
-  </div>
-</section>
-
-<!-- السلة الجانبية والفاتورة -->
-<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
-<div class="cart-drawer" id="cart-drawer">
-  <div class="cart-header">
-    <h3>سلة المشتريات</h3>
-    <button class="close-cart" onclick="closeCart()">✕</button>
-  </div>
-  
-  <div class="cart-items" id="cart-items"></div>
-
-  <div class="cart-checkout">
-    <div class="form-group">
-      <label>الاسم بالكامل:</label>
-      <input type="text" id="cust-name" placeholder="اكتبي اسمك هنا">
-    </div>
-    <div class="form-group">
-      <label>رقم الموبايل:</label>
-      <input type="tel" id="cust-phone" placeholder="01xxxxxxxxx">
-    </div>
-    <div class="form-group">
-      <label>منطقة الشحن:</label>
-      <select id="shipping-zone">
-        <option value="">-- اختاري المحافظة/المنطقة --</option>
-        <option value="cairo_giza">القاهرة والجيزة (70 ج.م)</option>
-        <option value="bahary">الوجه البحري والقناة (80 ج.م)</option>
-        <option value="beheira">البحيرة (90 ج.م)</option>
-        <option value="qebly">الوجه القبلي والصعيد (90 ج.م)</option>
-        <option value="new_valley">الوادي الجديد (110 ج.م)</option>
-        <option value="hurghada">الغردقة (110 ج.م)</option>
-        <option value="matrouh">مطروح (140 ج.م)</option>
-        <option value="sinai">شمال وجنوب سيناء (150 ج.م)</option>
-        <option value="sharm">شرم الشيخ (160 ج.م)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>العنوان بالتفصيل:</label>
-      <input type="text" id="cust-address" placeholder="الشارع، رقم العمارة والشقة، علامة مميزة">
+    <!-- منتج 16 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٠٢.jpg" alt="قطار بطة"></div>
+      <div class="pcard-body">
+        <h3>قطار بطة</h3>
+        <p class="price"><span class="old-price">220 ج.م</span><span class="new-price">180 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('قطار بطة', 180, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٠٢.jpg')">أضيفي للسلة 🛒</button>
+      </div>
     </div>
 
-    <div class="bill-row"><span>المجموع:</span><span id="cart-subtotal">0 ج.م</span></div>
-    <div class="bill-row"><span>الشحن:</span><span id="cart-shipping">0 ج.م</span></div>
-    <div class="bill-row bill-total"><span>الإجمالي:</span><span id="cart-total">0 ج.م</span></div>
+    <!-- منتج 17 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٢٠.jpg" alt="باكت شخاليل 7 قطع"></div>
+      <div class="pcard-body">
+        <h3>باكت شخاليل 7 قطع</h3>
+        <p class="price"><span class="old-price">240 ج.م</span><span class="new-price">200 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('باكت شخاليل 7 قطع', 200, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٢٠.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
 
-    <button class="whatsapp-submit" onclick="checkoutWhatsApp()">تأكيد الطلب عبر واتساب 💬</button>
-  </div>
-</div>
+    <!-- منتج 18 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٤٤.jpg" alt="شخليلة سوفت رمادي"></div>
+      <div class="pcard-body">
+        <h3>شخليلة سوفت رمادي</h3>
+        <p class="price"><span class="old-price">130 ج.م</span><span class="new-price">100 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('شخليلة سوفت رمادي', 100, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٤٤.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
 
-<footer>
-  <img src="logo.png" alt="التميز ستور"><br>
-  <p>التميز ستور © 2026</p>
-</footer>
+    <!-- منتج 19 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٥٣.jpg" alt="أساور يد بيبي"></div>
+      <div class="pcard-body">
+        <h3>أساور يد بيبي</h3>
+        <p class="price"><span class="old-price">170 ج.م</span><span class="new-price">140 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('أساور يد بيبي', 140, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٤٥٣.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
 
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <img id="lightbox-img" src="" alt="صورة مكبرة">
-</div>
+    <!-- منتج 20 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٠٧.jpg" alt="عمود حلقات بلاستيك"></div>
+      <div class="pcard-body">
+        <h3>عمود حلقات بلاستيك</h3>
+        <p class="price"><span class="old-price">150 ج.م</span><span class="new-price">120 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('عمود حلقات بلاستيك', 120, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٠٧.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
 
-<script src="cart.js"></script>
-<script>
-function openLightbox(src){
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox').classList.add('active');
-}
-function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('active');
-}
-</script>
+    <!-- منتج 21 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥١٤.jpg" alt="عضاضة فواكه"></div>
+      <div class="pcard-body">
+        <h3>عضاضة فواكه</h3>
+        <p class="price"><span class="old-price">90 ج.م</span><span class="new-price">75 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('عضاضة فواكه', 75, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٥١٤.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
 
-</body>
-</html>
+    <!-- منتج 22 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٢٣.jpg" alt="مطرقة مرحة"></div>
+      <div class="pcard-body">
+        <h3>مطرقة مرحة</h3>
+        <p class="price"><span class="old-price">300 ج.م</span><span class="new-price">270 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('مطرقة مرحة', 270, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٢٣.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 23 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٤٠.jpg" alt="سجادة فوم لوكس"></div>
+      <div class="pcard-body">
+        <h3>سجادة فوم لوكس (١٨٠×٢٠٠ سم، سمك ١ سم)</h3>
+        <p class="price"><span class="new-price">800 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('سجادة فوم لوكس', 800, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٥٤٠.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 24 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٠٨.jpg" alt="برج تدحرج"></div>
+      <div class="pcard-body">
+        <h3>برج تدحرج</h3>
+        <p class="price"><span class="old-price">260 ج.م</span><span class="new-price">230 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('برج تدحرج', 230, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٠٨.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 25 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٢٠.jpg" alt="بيض تطابق 6 قطع"></div>
+      <div class="pcard-body">
+        <h3>بيض تطابق 6 قطع</h3>
+        <p class="price"><span class="old-price">150 ج.م</span><span class="new-price">120 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('بيض تطابق 6 قطع', 120, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٢٠.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 26 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٣٣.jpg" alt="بوكس شخاليل 11 قطعة"></div>
+      <div class="pcard-body">
+        <h3>بوكس شخاليل 11 قطعة</h3>
+        <p class="price"><span class="old-price">330 ج.م</span><span class="new-price">300 ج.م</span></p>
+        <button class="order-btn" onclick="addToCart('بوكس شخاليل 11 قطعة', 300, 'IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٣٣.jpg')">أضيفي للسلة 🛒</button>
+      </div>
+    </div>
+
+    <!-- منتج 27 -->
+    <div class="pcard">
+      <div class="pcard-img"><img onclick="openLightbox(this.src)" src="IMG_٢٠٢٦٠٩٠٥_٠٠٣٦٤٦.jpg" alt="ببرونة لعبة"></div>
+      <div class="pcard-body">
+        <h3>ببرونة لعبة</h3>
+        <p class="price"><span class="old-price">260 ج.م</span><span class="new-price">230 ج.م</span></p>
+        <button class="order-btn" on
