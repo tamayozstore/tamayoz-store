@@ -48,10 +48,43 @@ function fallbackProducts(filters = {}) {
   return filters.limit ? rows.slice(0, filters.limit) : rows;
 }
 
+function normalizeImageIdentity(url) {
+  return String(url || "").split("?")[0].trim().toLocaleLowerCase("en");
+}
+
+function mergeDbAndFallback(dbRows, fallbackRows, limit = null) {
+  const rows = Array.isArray(dbRows) ? [...dbRows] : [];
+  const fallback = Array.isArray(fallbackRows) ? fallbackRows : [];
+
+  const seenSkus = new Set(rows.map((p) => String(p.sku || "").trim()).filter(Boolean));
+  const seenImages = new Set(rows.map((p) => normalizeImageIdentity(p.image_url)).filter(Boolean));
+
+  for (const product of fallback) {
+    const sku = String(product.sku || "").trim();
+    const image = normalizeImageIdentity(product.image_url);
+    if ((sku && seenSkus.has(sku)) || (image && seenImages.has(image))) continue;
+    rows.push(product);
+    if (sku) seenSkus.add(sku);
+    if (image) seenImages.add(image);
+  }
+
+  rows.sort((a, b) => {
+    const sortA = Number(a.sort_order || 0);
+    const sortB = Number(b.sort_order || 0);
+    if (sortA !== sortB) return sortA - sortB;
+    const dateA = Date.parse(a.created_at || 0) || 0;
+    const dateB = Date.parse(b.created_at || 0) || 0;
+    return dateB - dateA;
+  });
+  return limit ? rows.slice(0, limit) : rows;
+}
+
 async function fetchProducts(filters = {}) {
+  const fallback = fallbackProducts(filters);
   try {
     if (window.TAMAYOZ_SUPABASE_PROMISE) await window.TAMAYOZ_SUPABASE_PROMISE;
-    if (!window.storeDb || !window.TAMAYOZ_SUPABASE_READY) return fallbackProducts(filters);
+    if (!window.storeDb || !window.TAMAYOZ_SUPABASE_READY) return fallback;
+
     let query = window.storeDb
       .from("products")
       .select("id,sku,name,price,old_price,category,image_url,description,featured,active,in_stock,sort_order,created_at")
@@ -61,40 +94,17 @@ async function fetchProducts(filters = {}) {
 
     if (filters.featured) query = query.eq("featured", true);
     if (filters.category) query = query.in("category", storeCategoryQueryValues(filters.category));
-    if (filters.limit) query = query.limit(filters.limit);
+    // ما بنحطش limit على Query نفسها لأننا محتاجين ندمج الداتا القديمة الأول بدون ما نخسرها.
 
     const { data, error } = await query;
     if (error) throw error;
 
-    const rows = data || [];
-    const fallback = fallbackProducts(filters);
-
-    // لو قاعدة البيانات اتعملت جديد ولسه المنتجات القديمة ما اتعملهاش import،
-    // ما نخليش الفئة تظهر فاضية: نعرض داتا GitHub القديمة مؤقتًا بجانب أي منتجات جديدة.
-    if (filters.category && fallback.length) {
-      const normalized = normalizeStoreCategory(filters.category);
-      const legacyPrefix = `legacy-${normalized}-`;
-      const dbAlreadyOwnsLegacyCatalog = rows.some((product) => String(product.sku || "").startsWith(legacyPrefix));
-
-      if (!dbAlreadyOwnsLegacyCatalog) {
-        const seen = new Set(rows.map((product) => String(product.sku || `${product.name}|${product.image_url}`)));
-        const missingFallback = fallback.filter((product) => {
-          const key = String(product.sku || `${product.name}|${product.image_url}`);
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-        const merged = [...rows, ...missingFallback];
-        merged.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-        return filters.limit ? merged.slice(0, filters.limit) : merged;
-      }
-    }
-
-    if (!rows.length && fallback.length) return fallback;
-    return rows;
+    // قاعدة البيانات هي المصدر الأساسي، والـfallback يكمّل فقط المنتجات القديمة الناقصة.
+    // كده المنتجات الجديدة من الأدمن تظهر فوراً، وفي نفس الوقت منتجات GitHub القديمة ما تختفيش.
+    return mergeDbAndFallback(data || [], fallback, filters.limit || null);
   } catch (error) {
     console.error("Products fetch failed; using fallback:", error);
-    return fallbackProducts(filters);
+    return fallback;
   }
 }
 

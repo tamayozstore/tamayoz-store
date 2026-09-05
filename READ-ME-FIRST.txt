@@ -1,0 +1,12 @@
+Tamayoz Store - repo sync fix
+
+1) ارفع كل الملفات الموجودة في هذا الفولدر إلى جذر GitHub واعمل Replace للملفات المتكررة.
+2) لا تمسح أي JPG/PNG ولا فولدر year1 ولا صورك القديمة.
+3) في Supabase > SQL Editor شغّل RUN-SAFE-REPAIR.sql مرة واحدة فقط. الملف لا يحذف المنتجات أو الطلبات.
+4) انتظر Vercel حتى يصبح آخر Deploy = Ready ثم اعمل Hard Refresh.
+5) اختبر:
+   products.html?category=1-2.5
+   products.html?category=3-5
+
+مهم: المنتجات القديمة لفئة سنة-سنتين ونص مضافة في products-fallback.js وتستخدم صور GitHub الحالية داخل year1/readme.txt.
+المنتجات الجديدة من Admin تبقى في Supabase وتظهر مع القديمة.

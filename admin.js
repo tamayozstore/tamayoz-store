@@ -127,10 +127,10 @@ function randomStoragePath() {
 function friendlyStorageError(error) {
   const text = String(error?.message || error || "");
   if (/bucket.*not found/i.test(text) || /not found.*bucket/i.test(text)) {
-    return new Error("مساحة الصور في Supabase (products bucket) مش موجودة. شغّل ملف RUN-THIS-NOW-SAFE.sql مرة واحدة من Supabase > SQL Editor، وبعدها اعمل Refresh للوحة الأدمن.");
+    return new Error("مساحة الصور في Supabase (products bucket) مش موجودة. شغّل ملف RUN-SAFE-REPAIR.sql مرة واحدة من Supabase > SQL Editor، وبعدها اعمل Refresh للوحة الأدمن.");
   }
   if (/row-level security|rls|policy|permission|unauthorized|forbidden/i.test(text)) {
-    return new Error("مساحة الصور موجودة لكن صلاحيات Storage ناقصة. شغّل RUN-THIS-NOW-SAFE.sql مرة واحدة من Supabase > SQL Editor.");
+    return new Error("مساحة الصور موجودة لكن صلاحيات Storage ناقصة. شغّل RUN-SAFE-REPAIR.sql مرة واحدة من Supabase > SQL Editor.");
   }
   return error instanceof Error ? error : new Error(text || "خطأ في Supabase Storage");
 }
@@ -358,6 +358,39 @@ function applyBatchBulk(action) {
   renderBatchDrafts();
 }
 
+let publicStoreDb = null;
+function getPublicStoreDb() {
+  if (publicStoreDb) return publicStoreDb;
+  const cfg = window.TAMAYOZ_CONFIG || {};
+  if (!window.supabase?.createClient || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return null;
+  publicStoreDb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      storageKey: `tamayoz-public-check-${Date.now()}`
+    }
+  });
+  return publicStoreDb;
+}
+
+async function checkProductPublicVisibility(productId) {
+  try {
+    const client = getPublicStoreDb();
+    if (!client || !productId) return { checked: false, visible: null };
+    const { data, error } = await client
+      .from("products")
+      .select("id")
+      .eq("id", productId)
+      .eq("active", true)
+      .maybeSingle();
+    if (error) return { checked: true, visible: false, error };
+    return { checked: true, visible: Boolean(data?.id) };
+  } catch (error) {
+    return { checked: false, visible: null, error };
+  }
+}
+
 async function uploadBatch(selectedOnly = false) {
   clearMessage("batch-message");
   const targets = selectedOnly ? getSelectedBatchDrafts() : [...batchDrafts];
@@ -373,6 +406,7 @@ async function uploadBatch(selectedOnly = false) {
   if (button) button.disabled = true;
   let success = 0;
   const savedIds = new Set();
+  const publicWarnings = [];
 
   try {
     await assertProductsBucketReady();
@@ -392,13 +426,24 @@ async function uploadBatch(selectedOnly = false) {
         in_stock: Boolean(draft.in_stock),
         sort_order: 0
       };
-      const { error } = await window.storeDb.from("products").insert(payload);
+
+      const { data: inserted, error } = await window.storeDb
+        .from("products")
+        .insert(payload)
+        .select("id,name,category,active,image_url")
+        .single();
       if (error) {
         await removeStoredImage(imageUrl);
         throw error;
       }
+
       success++;
       savedIds.add(String(draft.id));
+
+      const visibility = await checkProductPublicVisibility(inserted?.id);
+      if (visibility.checked && visibility.visible === false) {
+        publicWarnings.push(`${draft.name} (${payload.category})`);
+      }
     }
 
     savedIds.forEach((id) => selectedBatchDraftIds.delete(id));
@@ -409,8 +454,17 @@ async function uploadBatch(selectedOnly = false) {
     });
     if (!batchDrafts.length) document.getElementById("batch-files").value = "";
     renderBatchDrafts();
-    setMessage("batch-message", `تم رفع وحفظ ${success} منتج بنجاح ✅${batchDrafts.length ? ` — باقي ${batchDrafts.length} منتج في قائمة التعديل.` : ""}`);
     await loadAdminProducts();
+
+    if (publicWarnings.length) {
+      setMessage(
+        "batch-message",
+        `تم حفظ ${success} منتج في قاعدة البيانات، لكن ${publicWarnings.length} منتج مش ظاهر للزوار بسبب صلاحية القراءة العامة. شغّل RUN-SAFE-REPAIR.sql من Supabase مرة واحدة ثم اعمل Refresh.`,
+        "error"
+      );
+    } else {
+      setMessage("batch-message", `تم رفع وحفظ ${success} منتج وظهوره للعامة ✅${batchDrafts.length ? ` — باقي ${batchDrafts.length} منتج في قائمة التعديل.` : ""}`);
+    }
   } catch (error) {
     console.error(error);
     if (savedIds.size) {
@@ -540,7 +594,7 @@ async function syncLegacyProducts() {
       .select("sku,name,category,image_url");
     if (readError) {
       if (/relation .*products.* does not exist|could not find the table|schema cache/i.test(String(readError.message || ""))) {
-        throw new Error("جدول products لسه مش موجود. شغّل RUN-THIS-NOW-SAFE.sql الأول ثم اعمل Refresh.");
+        throw new Error("جدول products لسه مش موجود. شغّل RUN-SAFE-REPAIR.sql الأول ثم اعمل Refresh.");
       }
       throw readError;
     }
