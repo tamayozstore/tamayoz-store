@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>لوحة إدارة التميز ستور</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-page admin-pro-page">
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <main class="admin-login-shell" id="login-shell">
+    <div class="admin-login-brand">
+      <div class="admin-login-mark">T</div>
+      <div>
+        <h1>التميز ستور</h1>
+        <p>لوحة إدارة المتجر</p>
+      </div>
+    </div>
+
+    <div id="setup-warning" class="setup-warning hidden"></div>
+
+    <section class="admin-card login-card-pro" id="login-card">
+      <div class="section-kicker">ADMIN PANEL</div>
+      <h2>أهلاً بيك 👋</h2>
+      <p class="muted-text">سجّل دخولك لإدارة المنتجات والصور والطلبات.</p>
+      <form id="login-form" class="login-form-pro">
+        <div class="form-group">
+          <label for="login-email">الإيميل</label>
+          <input type="email" id="login-email" required autocomplete="username" placeholder="admin@example.com">
+        </div>
+        <div class="form-group">
+          <label for="login-password">كلمة السر</label>
+          <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <button class="admin-btn admin-btn-wide" id="login-btn" type="submit">دخول إلى لوحة الإدارة</button>
+        <div id="login-message" class="status-message"></div>
+      </form>
+      <a class="login-store-link" href="index.html">فتح المتجر ↗</a>
+    </section>
+  </main>
+
+  <div id="dashboard" class="admin-app hidden">
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-mark">T</div>
+        <div>
+          <strong>التميز ستور</strong>
+          <span>لوحة الإدارة</span>
+        </div>
+      </div>
+
+      <nav class="admin-sidebar-nav" aria-label="أقسام لوحة الإدارة">
+        <a href="#overview" class="active"><span>▦</span> نظرة عامة</a>
+        <a href="#products"><span>▤</span> المنتجات</a>
+        <a href="#add-products"><span>＋</span> إضافة منتجات</a>
+        <a href="#branding"><span>▣</span> الصور واللوجو</a>
+        <a href="#orders"><span>✓</span> الطلبات <em class="sidebar-badge hidden" id="sidebar-new-orders-badge">0</em></a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <a href="index.html" target="_blank" rel="noopener">فتح المتجر ↗</a>
+        <button id="logout-btn" type="button">تسجيل الخروج</button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-header-pro">
+        <div>
+          <span class="section-kicker">TAMAYOZ STORE</span>
+          <h1>إدارة المتجر</h1>
+          <p>كل اللي تحتاجه لإدارة المنتجات والطلبات من مكان واحد.</p>
+        </div>
+        <div class="admin-user-chip">
+          <span class="online-dot"></span>
+          <div>
+            <small>مسجل كـ</small>
+            <strong id="admin-email">Admin</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-section" id="overview">
+        <div class="section-title-row">
+          <div>
+            <span class="section-kicker">OVERVIEW</span>
+            <h2>نظرة عامة</h2>
+          </div>
+          <button class="admin-btn ghost" id="refresh-dashboard-btn" type="button">↻ تحديث البيانات</button>
+        </div>
+
+        <div class="dashboard-stats">
+          <article class="stat-card"><span class="stat-icon">📦</span><div><small>إجمالي المنتجات</small><strong id="stat-products">0</strong><span>منتج</span></div></article>
+          <article class="stat-card"><span class="stat-icon">👁️</span><div><small>المنتجات الظاهرة</small><strong id="stat-visible">0</strong><span>في المتجر</span></div></article>
+          <article class="stat-card"><span class="stat-icon">⚠️</span><div><small>نفد من المخزون</small><strong id="stat-out-stock">0</strong><span>يحتاج مراجعة</span></div></article>
+          <article class="stat-card"><span class="stat-icon">🛍️</span><div><small>طلبات جديدة</small><strong id="stat-new-orders">0</strong><span>آخر 100 طلب</span></div></article>
+          <article class="stat-card stat-card-wide"><span class="stat-icon">💰</span><div><small>إجمالي قيمة الطلبات</small><strong id="stat-revenue">0 ج.م</strong><span>آخر 100 طلب</span></div></article>
+        </div>
+
+        <div class="quick-actions-grid">
+          <a href="#add-products" class="quick-action"><span>＋</span><div><strong>إضافة منتجات</strong><small>ارفع صور متعددة مرة واحدة</small></div></a>
+          <a href="#products" class="quick-action"><span>▤</span><div><strong>إدارة المنتجات</strong><small>بحث، تحديد، حذف وتعديل جماعي</small></div></a>
+          <a href="#orders" class="quick-action"><span>✓</span><div><strong>متابعة الطلبات</strong><small>فلترة وتغيير حالة عدة طلبات</small></div></a>
+        </div>
+      </section>
+
+      <section class="admin-section" id="products">
+        <div class="section-title-row">
+          <div>
+            <span class="section-kicker">PRODUCTS</span>
+            <h2>إدارة المنتجات</h2>
+            <p class="muted-text">ابحث وفلتر وحدد أكتر من منتج ونفّذ عليهم أمر واحد.</p>
+          </div>
+          <button class="admin-btn ghost" id="refresh-products-btn" type="button">↻ تحديث</button>
+        </div>
+
+        <div class="admin-toolbar-pro">
+          <div class="toolbar-search">
+            <span>⌕</span>
+            <input id="product-search" type="search" placeholder="ابحث باسم المنتج...">
+          </div>
+          <select id="product-category-filter" aria-label="فلترة حسب الفئة">
+            <option value="all">كل الفئات</option>
+            <option value="0-12">0 - 12 شهر</option>
+            <option value="1-2.5">سنة - سنتين ونص</option>
+            <option value="3-5">3 - 5 سنين</option>
+            <option value="6-11">6 - 11 سنة</option>
+            <option value="uncategorized">غير مصنف</option>
+          </select>
+          <select id="product-visibility-filter" aria-label="فلترة حسب الظهور">
+            <option value="all">الظهور: الكل</option>
+            <option value="active">ظاهر</option>
+            <option value="hidden">مخفي</option>
+          </select>
+          <select id="product-stock-filter" aria-label="فلترة حسب المخزون">
+            <option value="all">المخزون: الكل</option>
+            <option value="in">متاح</option>
+            <option value="out">نفد</option>
+          </select>
+          <button class="admin-btn ghost compact" id="clear-product-filters" type="button">مسح الفلاتر</button>
+        </div>
+
+        <div class="selection-command-center">
+          <div class="selection-command-head">
+            <div>
+              <strong>التحديد الجماعي</strong>
+              <span><b id="products-selected-count">0</b> منتج محدد من <b id="products-filtered-count">0</b> نتيجة</span>
+            </div>
+            <div class="selection-shortcuts">
+              <button class="admin-btn ghost compact" id="select-current-product-page" type="button">تحديد الصفحة</button>
+              <button class="admin-btn ghost compact" id="select-all-filtered-products" type="button">تحديد كل النتائج</button>
+              <button class="admin-btn ghost compact" id="invert-current-product-page" type="button">عكس تحديد الصفحة</button>
+              <button class="admin-btn ghost compact" id="clear-product-selection" type="button">مسح التحديد</button>
+            </div>
+          </div>
+
+          <div class="bulk-action-bar" id="products-bulk-bar">
+            <div class="bulk-actions bulk-actions-grid">
+              <button class="bulk-btn" data-bulk-product-action="show" type="button">👁 إظهار</button>
+              <button class="bulk-btn" data-bulk-product-action="hide" type="button">🙈 إخفاء</button>
+              <button class="bulk-btn" data-bulk-product-action="stock" type="button">✓ متاح</button>
+              <button class="bulk-btn" data-bulk-product-action="out" type="button">⛔ نفد</button>
+              <button class="bulk-btn" data-bulk-product-action="featured" type="button">★ مميز</button>
+              <button class="bulk-btn" data-bulk-product-action="unfeatured" type="button">☆ إلغاء مميز</button>
+
+              <div class="bulk-category-control">
+                <select id="bulk-category-select" aria-label="تغيير الفئة">
+                  <option value="">نقل إلى فئة...</option>
+                  <option value="0-12">0 - 12 شهر</option>
+                  <option value="1-2.5">سنة - سنتين ونص</option>
+                  <option value="3-5">3 - 5 سنين</option>
+                  <option value="6-11">6 - 11 سنة</option>
+                  <option value="uncategorized">غير مصنف</option>
+                </select>
+                <button class="bulk-btn" id="apply-bulk-category" type="button">نقل</button>
+              </div>
+
+              <div class="bulk-price-control">
+                <select id="bulk-price-mode" aria-label="نوع تعديل السعر">
+                  <option value="set">تعيين سعر ثابت</option>
+                  <option value="increase_percent">زيادة %</option>
+                  <option value="decrease_percent">خصم %</option>
+                  <option value="increase_amount">زيادة مبلغ</option>
+                  <option value="decrease_amount">خصم مبلغ</option>
+                </select>
+                <input id="bulk-price-value" type="number" min="0" step="0.01" placeholder="القيمة">
+                <button class="bulk-btn" id="apply-bulk-price" type="button">تعديل السعر</button>
+              </div>
+
+              <button class="bulk-btn danger bulk-delete-main" data-bulk-product-action="delete" type="button">🗑 حذف كل المحدد</button>
+            </div>
+            <p class="bulk-help" id="products-bulk-help">حدد منتج أو أكتر من مربعات الاختيار، أو استخدم أزرار التحديد فوق.</p>
+          </div>
+        </div>
+
+        <div id="products-message" class="status-message"></div>
+        <div class="admin-table-wrap pro-table-wrap">
+          <table class="admin-table pro-table">
+            <thead>
+              <tr>
+                <th class="select-col"><input type="checkbox" id="select-all-products" aria-label="تحديد كل المنتجات الظاهرة"></th>
+                <th>صورة</th><th>المنتج</th><th>السعر</th><th>الفئة</th><th>مميز</th><th>الظهور</th><th>المخزون</th><th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer-pro">
+          <span id="products-result-count">0 منتج</span>
+          <div class="pagination-controls">
+            <button class="admin-btn ghost compact" id="products-prev-page" type="button">السابق</button>
+            <span id="products-page-info">1 / 1</span>
+            <button class="admin-btn ghost compact" id="products-next-page" type="button">التالي</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-section" id="add-products">
+        <div class="section-title-row">
+          <div>
+            <span class="section-kicker">ADD PRODUCTS</span>
+            <h2>إضافة منتجات بالجملة 📸</h2>
+            <p class="muted-text">اختار كل الصور مرة واحدة. هتتضغط WebP تلقائيًا قبل الرفع.</p>
+          </div>
+        </div>
+
+        <div class="upload-zone-card">
+          <div class="batch-toolbar batch-toolbar-pro">
+            <div class="form-group no-margin">
+              <label for="batch-default-category">الفئة الافتراضية</label>
+              <select id="batch-default-category">
+                <option value="0-12">0 - 12 شهر</option>
+                <option value="1-2.5">سنة - سنتين ونص</option>
+                <option value="3-5">3 - 5 سنين</option>
+                <option value="6-11">6 - 11 سنة</option>
+                <option value="uncategorized" selected>غير مصنف</option>
+              </select>
+            </div>
+            <label class="file-drop-button" for="batch-files">
+              <span>📷</span>
+              <div><strong>اختار صور المنتجات</strong><small>JPG / PNG / WebP — تقدر تختار صور كتير</small></div>
+              <input type="file" id="batch-files" accept="image/jpeg,image/png,image/webp" multiple>
+            </label>
+          </div>
+
+          <div id="batch-list" class="batch-list"></div>
+
+          <div class="admin-actions batch-footer-actions">
+            <button class="admin-btn ghost" id="clear-batch-btn" type="button">مسح القائمة</button>
+            <button class="admin-btn secondary" id="upload-batch-btn" type="button">رفع وحفظ كل المنتجات</button>
+          </div>
+          <div id="batch-message" class="status-message"></div>
+        </div>
+      </section>
+
+      <section class="admin-section" id="branding">
+        <div class="section-title-row">
+          <div>
+            <span class="section-kicker">BRANDING & MEDIA</span>
+            <h2>الصور واللوجو</h2>
+            <p class="muted-text">الصور القديمة تفضل على GitHub زي ما هي، والجديد فقط يترفع على Supabase. اللوجو بيتخزن على Supabase.</p>
+          </div>
+        </div>
+
+        <div class="admin-two-columns">
+          <article class="admin-card media-card-pro">
+            <div class="card-icon-title"><span>🖼️</span><div><h3>لوجو المتجر</h3><p>ارفع اللوجو الصحيح وهيظهر في كل صفحات الموقع.</p></div></div>
+            <div class="logo-manager">
+              <div class="logo-preview-box"><img id="store-logo-preview" class="admin-thumb logo-preview-pro" alt="لوجو المتجر"></div>
+              <div class="logo-manager-controls">
+                <div class="form-group">
+                  <label for="store-logo-file">اختار اللوجو</label>
+                  <input type="file" id="store-logo-file" accept="image/jpeg,image/png,image/webp">
+                </div>
+                <button class="admin-btn" id="upload-store-logo-btn" type="button">رفع اللوجو إلى Supabase</button>
+              </div>
+            </div>
+            <div id="store-logo-message" class="status-message"></div>
+          </article>
+
+          <article class="admin-card media-card-pro">
+            <div class="card-icon-title"><span>🛡️</span><div><h3>الحفاظ على المنتجات الحالية</h3><p>يسجل أي منتج قديم ناقص في قاعدة البيانات من غير ما يرفع أو ينقل الصور.</p></div></div>
+            <div class="legacy-preserve-note">
+              <strong>الصور القديمة ستظل على GitHub.</strong>
+              <span>المنتجات الجديدة فقط هي اللي صورها هتترفع على Supabase من قسم إضافة المنتجات.</span>
+            </div>
+            <button class="admin-btn secondary" id="sync-legacy-data-btn" type="button">فحص واستيراد المنتجات القديمة الناقصة</button>
+            <div id="legacy-data-message" class="status-message"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="admin-section orders-dashboard-section" id="orders">
+        <div class="section-title-row">
+          <div>
+            <span class="section-kicker">ORDERS CENTER</span>
+            <h2>إدارة الطلبات</h2>
+            <p class="muted-text">تابع الطلب من لحظة دخوله لحد التسليم، وافتح تفاصيل العميل والفاتورة في ضغطة واحدة.</p>
+          </div>
+          <div class="section-actions-row">
+            <button class="admin-btn ghost" id="export-orders-btn" type="button">⇩ تصدير CSV</button>
+            <button class="admin-btn ghost" id="refresh-orders-btn" type="button">↻ تحديث</button>
+          </div>
+        </div>
+
+        <div class="orders-kpi-grid">
+          <article class="order-kpi"><span>🆕</span><div><small>طلبات جديدة</small><strong id="orders-kpi-new">0</strong></div></article>
+          <article class="order-kpi"><span>☎️</span><div><small>تم التأكيد</small><strong id="orders-kpi-confirmed">0</strong></div></article>
+          <article class="order-kpi"><span>🚚</span><div><small>في الشحن</small><strong id="orders-kpi-shipped">0</strong></div></article>
+          <article class="order-kpi"><span>✅</span><div><small>تم التسليم</small><strong id="orders-kpi-delivered">0</strong></div></article>
+          <article class="order-kpi"><span>📅</span><div><small>طلبات اليوم</small><strong id="orders-kpi-today">0</strong></div></article>
+          <article class="order-kpi order-kpi-money"><span>💰</span><div><small>قيمة الطلبات</small><strong id="orders-kpi-revenue">0 ج.م</strong></div></article>
+        </div>
+
+        <div class="admin-toolbar-pro orders-toolbar">
+          <div class="toolbar-search">
+            <span>⌕</span>
+            <input id="order-search" type="search" placeholder="رقم الطلب، اسم العميل، الهاتف أو العنوان...">
+          </div>
+          <select id="order-status-filter" aria-label="فلترة حالة الطلب">
+            <option value="all">كل الحالات</option>
+            <option value="new">جديد</option>
+            <option value="confirmed">تم التأكيد</option>
+            <option value="shipped">تم الشحن</option>
+            <option value="delivered">تم التسليم</option>
+            <option value="cancelled">ملغي</option>
+          </select>
+          <select id="order-period-filter" aria-label="فلترة فترة الطلبات">
+            <option value="all">كل الفترات</option>
+            <option value="today">اليوم</option>
+            <option value="7">آخر 7 أيام</option>
+            <option value="30">آخر 30 يوم</option>
+          </select>
+          <button class="admin-btn ghost compact" id="select-all-filtered-orders" type="button">تحديد كل النتائج</button>
+          <button class="admin-btn ghost compact" id="clear-order-filters" type="button">مسح الفلاتر</button>
+        </div>
+
+        <div class="bulk-action-bar hidden" id="orders-bulk-bar">
+          <div class="bulk-selected"><strong id="orders-selected-count">0</strong> طلب محدد <button class="clear-selection-link" id="clear-order-selection" type="button">إلغاء التحديد</button></div>
+          <div class="bulk-actions">
+            <select id="bulk-order-status">
+              <option value="">غيّر الحالة إلى...</option>
+              <option value="new">جديد</option>
+              <option value="confirmed">تم التأكيد</option>
+              <option value="shipped">تم الشحن</option>
+              <option value="delivered">تم التسليم</option>
+              <option value="cancelled">ملغي</option>
+            </select>
+            <button class="bulk-btn" id="apply-bulk-order-status" type="button">تحديث الحالات</button>
+          </div>
+        </div>
+
+        <div id="orders-message" class="status-message"></div>
+        <div class="admin-table-wrap pro-table-wrap">
+          <table class="admin-table pro-table orders-table-pro">
+            <thead>
+              <tr>
+                <th class="select-col"><input type="checkbox" id="select-all-orders" aria-label="تحديد كل الطلبات الظاهرة"></th>
+                <th>رقم</th><th>العميل</th><th>الإجمالي</th><th>منطقة الشحن</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer-pro"><span id="orders-result-count">0 طلب</span><small>يتم تحميل أحدث 500 طلب.</small></div>
+      </section>
+
+      <footer class="admin-footer-pro">التميز ستور © 2026 — لوحة الإدارة</footer>
+    </div>
+  </div>
+
+  <div class="admin-modal hidden" id="edit-panel" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+    <div class="admin-modal-backdrop" data-close-editor></div>
+    <section class="admin-modal-card">
+      <div class="admin-modal-header">
+        <div><span class="section-kicker">EDIT PRODUCT</span><h2 id="edit-title">تعديل المنتج</h2></div>
+        <button class="modal-close-btn" id="cancel-edit-btn" type="button" aria-label="إغلاق">×</button>
+      </div>
+      <form id="edit-form">
+        <div class="edit-product-layout">
+          <div class="edit-image-column">
+            <div class="edit-image-box"><img id="edit-image-preview" class="admin-thumb edit-image-preview-pro" alt=""></div>
+            <div class="form-group"><label for="edit-image">تغيير الصورة (اختياري)</label><input type="file" id="edit-image" accept="image/jpeg,image/png,image/webp"></div>
+          </div>
+          <div class="edit-fields-column">
+            <div class="admin-grid">
+              <div class="form-group"><label for="edit-name">اسم المنتج</label><input id="edit-name" required></div>
+              <div class="form-group"><label for="edit-category">الفئة</label><select id="edit-category"><option value="0-12">0 - 12 شهر</option><option value="1-2.5">سنة - سنتين ونص</option><option value="3-5">3 - 5 سنين</option><option value="6-11">6 - 11 سنة</option><option value="uncategorized">غير مصنف</option></select></div>
+              <div class="form-group"><label for="edit-price">السعر</label><input id="edit-price" type="number" min="0" step="0.01" required></div>
+              <div class="form-group"><label for="edit-old-price">السعر القديم</label><input id="edit-old-price" type="number" min="0" step="0.01"></div>
+            </div>
+            <div class="form-group"><label for="edit-description">الوصف</label><textarea id="edit-description" rows="4" placeholder="وصف مختصر للمنتج..."></textarea></div>
+            <div class="toggle-grid">
+              <label class="switch-row"><input type="checkbox" id="edit-featured"><span class="switch-ui"></span><div><strong>منتج مميز</strong><small>يظهر في الرئيسية</small></div></label>
+              <label class="switch-row"><input type="checkbox" id="edit-active"><span class="switch-ui"></span><div><strong>ظاهر في المتجر</strong><small>يمكن للعملاء رؤيته</small></div></label>
+              <label class="switch-row"><input type="checkbox" id="edit-stock"><span class="switch-ui"></span><div><strong>متاح في المخزون</strong><small>يمكن إضافته للسلة</small></div></label>
+            </div>
+          </div>
+        </div>
+        <div class="admin-modal-footer">
+          <div id="edit-message" class="status-message"></div>
+          <div class="admin-actions no-margin">
+            <button class="admin-btn ghost" type="button" data-close-editor>إلغاء</button>
+            <button class="admin-btn" id="save-edit-btn" type="submit">حفظ التعديلات</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="admin-modal hidden" id="order-panel" role="dialog" aria-modal="true" aria-labelledby="order-panel-title">
+    <div class="admin-modal-backdrop" data-close-order></div>
+    <section class="admin-modal-card order-modal-card">
+      <div class="admin-modal-header">
+        <div><span class="section-kicker">ORDER DETAILS</span><h2 id="order-panel-title">تفاصيل الطلب</h2></div>
+        <button class="modal-close-btn" id="close-order-btn" type="button" aria-label="إغلاق">×</button>
+      </div>
+      <div id="order-detail-content" class="order-detail-content"></div>
+      <div class="admin-modal-footer order-modal-footer">
+        <div class="order-modal-status-control">
+          <label for="order-detail-status">حالة الطلب</label>
+          <select id="order-detail-status"></select>
+        </div>
+        <div class="admin-actions no-margin">
+          <button class="admin-btn whatsapp-admin-btn" id="order-whatsapp-btn" type="button">واتساب العميل</button>
+          <button class="admin-btn ghost" type="button" data-close-order>إغلاق</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="products-fallback.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

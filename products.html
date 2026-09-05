@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="تصفحي ألعاب التميز ستور حسب المرحلة العمرية وابحثي عن اللعبة المناسبة لطفلك.">
+  <meta name="theme-color" content="#FBF5EC">
+  <title>المنتجات - التميز ستور</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="index.html" class="nav-logo" aria-label="التميز ستور"></a>
+    <div class="nav-actions">
+      <a href="index.html" class="back-btn">← الرئيسية</a>
+      <button class="cart-btn" type="button" data-open-cart>🛒 السلة <span class="cart-badge" data-cart-count>0</span></button>
+    </div>
+  </nav>
+
+  <main class="section">
+    <div class="section-head">
+      <h1 id="category-title">المنتجات</h1>
+      <p id="category-subtitle">اختاري اللعبة المناسبة لطفلك</p>
+    </div>
+
+    <div class="ages-grid" style="margin-bottom:26px">
+      <a href="products.html?category=0-12" class="age-card age-bg1"><div class="icon">👶</div><div class="label">0 - 12 شهر</div></a>
+      <a href="products.html?category=1-2.5" class="age-card age-bg2"><div class="icon">🧸</div><div class="label">سنة - سنتين ونص</div></a>
+      <a href="products.html?category=3-5" class="age-card age-bg3"><div class="icon">🎨</div><div class="label">3 - 5 سنين</div></a>
+      <a href="products.html?category=6-11" class="age-card age-bg4"><div class="icon">🎒</div><div class="label">6 - 11 سنة</div></a>
+    </div>
+
+    <div class="search-bar">
+      <input type="search" id="product-search" placeholder="ابحثي باسم اللعبة..." aria-label="البحث في المنتجات">
+    </div>
+
+    <div class="products-grid" id="products-grid"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">التميز ستور</div>
+    <p>التميز ستور © 2026</p>
+  </footer>
+
+  <div id="cart-root"></div>
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" data-close-lightbox aria-label="إغلاق">✕</button>
+    <img id="lightbox-img" src="" alt="صورة مكبرة">
+  </div>
+
+  <script src="config.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="branding.js"></script>
+  <script src="products-fallback.js"></script>
+  <script src="cart.js"></script>
+  <script src="store.js"></script>
+</body>
+</html>

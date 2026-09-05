@@ -1,0 +1,212 @@
+const CATEGORY_META = {
+  "0-12": { title: "ألعاب من 0 لـ 12 شهر 👶", subtitle: "ألعاب آمنة ومختارة بعناية لتنمية مهارات طفلك الحسية والحركية في عامه الأول" },
+  "1-2.5": { title: "ألعاب من سنة لسنتين ونص 🧸", subtitle: "اختيارات مناسبة لمرحلة الحركة والاستكشاف وتنمية المهارات الأساسية" },
+  "3-5": { title: "ألعاب من 3 لـ 5 سنين 🎨", subtitle: "ألعاب تساعد على الخيال والتركيز والتعلم باللعب" },
+  "6-11": { title: "ألعاب من 6 لـ 11 سنة 🎒", subtitle: "ألعاب وتحديات مناسبة للأطفال الأكبر سنًا" },
+  "uncategorized": { title: "منتجات أخرى", subtitle: "منتجات لم يتم تحديد فئتها العمرية بعد" }
+};
+
+const LEGACY_IMPORT_MARKER_SKU = "__system_legacy_import_v2__";
+
+let currentProducts = [];
+let currentCategory = null;
+
+function safeText(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function applyProductFilters(rows, filters = {}) {
+  let result = [...rows].filter((p) => p && p.active !== false && p.sku !== LEGACY_IMPORT_MARKER_SKU);
+  if (filters.featured) result = result.filter((p) => Boolean(p.featured));
+  if (filters.category) result = result.filter((p) => p.category === filters.category);
+  result.sort((a, b) => {
+    const orderDiff = (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0);
+    if (orderDiff !== 0) return orderDiff;
+    return String(a.name || "").localeCompare(String(b.name || ""), "ar");
+  });
+  return filters.limit ? result.slice(0, filters.limit) : result;
+}
+
+function fallbackProducts(filters = {}) {
+  const rows = Array.isArray(window.TAMAYOZ_FALLBACK_PRODUCTS) ? window.TAMAYOZ_FALLBACK_PRODUCTS : [];
+  return applyProductFilters(rows, filters);
+}
+
+function productMergeKey(product) {
+  if (product?.sku) return `sku:${String(product.sku)}`;
+  if (product?.image_url) return `image:${String(product.image_url)}`;
+  return `name:${String(product?.name || "").trim().toLowerCase()}`;
+}
+
+function mergeLegacyAndDatabase(dbRows, filters = {}) {
+  const merged = new Map();
+  const legacyRows = Array.isArray(window.TAMAYOZ_FALLBACK_PRODUCTS) ? window.TAMAYOZ_FALLBACK_PRODUCTS : [];
+
+  // القديم أولاً، وبيانات Supabase تاخد الأولوية لو نفس الـSKU موجود.
+  legacyRows.forEach((product) => merged.set(productMergeKey(product), { ...product, source: "github-legacy" }));
+  (dbRows || []).forEach((product) => {
+    if (product?.sku === LEGACY_IMPORT_MARKER_SKU) return;
+    merged.set(productMergeKey(product), { ...product, source: "supabase" });
+  });
+
+  return applyProductFilters([...merged.values()], filters);
+}
+
+async function isLegacyCatalogImported() {
+  try {
+    const { data, error } = await window.storeDb
+      .from("products")
+      .select("sku")
+      .eq("sku", LEGACY_IMPORT_MARKER_SKU)
+      .limit(1);
+    if (error) return false;
+    return Boolean(data?.length);
+  } catch (_) {
+    return false;
+  }
+}
+
+async function fetchProducts(filters = {}) {
+  try {
+    if (window.TAMAYOZ_SUPABASE_PROMISE) await window.TAMAYOZ_SUPABASE_PROMISE;
+    if (!window.storeDb || !window.TAMAYOZ_SUPABASE_READY) return fallbackProducts(filters);
+
+    // قبل أول مزامنة للبيانات القديمة، نجيب بيانات Supabase ونكمل أي منتجات ناقصة
+    // من كتالوج GitHub المحلي. بعد المزامنة، Supabase يبقى المصدر الوحيد للبيانات.
+    const legacyImported = await isLegacyCatalogImported();
+
+    let query = window.storeDb
+      .from("products")
+      .select("id,sku,name,price,old_price,category,image_url,description,featured,active,in_stock,sort_order,created_at")
+      .eq("active", true)
+      .neq("sku", LEGACY_IMPORT_MARKER_SKU)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
+
+    if (filters.featured) query = query.eq("featured", true);
+    if (filters.category) query = query.eq("category", filters.category);
+    if (legacyImported && filters.limit) query = query.limit(filters.limit);
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    if (legacyImported) return applyProductFilters(data || [], filters);
+    return mergeLegacyAndDatabase(data || [], filters);
+  } catch (error) {
+    console.error("Products fetch failed; using GitHub catalog fallback:", error);
+    return fallbackProducts(filters);
+  }
+}
+
+function productCardTemplate(product) {
+  const price = Number(product.price || 0);
+  const oldPrice = product.old_price == null ? null : Number(product.old_price);
+  const soldOut = product.in_stock === false;
+  return `
+    <article class="product-card">
+      <div class="product-image-wrap">
+        ${product.featured ? '<span class="product-badge">مميز</span>' : ""}
+        <img src="${safeText(product.image_url)}" alt="${safeText(product.name)}" loading="lazy" decoding="async" data-lightbox-src="${safeText(product.image_url)}">
+      </div>
+      <div class="product-body">
+        <h3>${safeText(product.name)}</h3>
+        ${product.description ? `<p class="product-description">${safeText(product.description)}</p>` : ""}
+        <p class="product-price">
+          ${oldPrice && oldPrice > price ? `<span class="old-price">${oldPrice.toLocaleString("ar-EG")} ج.م</span>` : ""}
+          <span class="new-price">${price.toLocaleString("ar-EG")} ج.م</span>
+        </p>
+        <button class="add-cart-btn" type="button" data-product-id="${safeText(product.id || product.sku)}" ${soldOut ? "disabled" : ""}>
+          ${soldOut ? "نفد من المخزون" : "أضيفي للسلة 🛒"}
+        </button>
+      </div>
+    </article>`;
+}
+
+function renderProducts(container, products) {
+  if (!container) return;
+  currentProducts = products;
+  if (!products.length) {
+    container.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><strong>مفيش منتجات في الفئة دي لسه.</strong><br>تقدري تضيفيها من لوحة الإدارة من غير تعديل الكود.</div>';
+    return;
+  }
+
+  container.innerHTML = products.map(productCardTemplate).join("");
+  bindProductInteractions(container, products);
+}
+
+function bindProductInteractions(container, products) {
+  const map = new Map(products.map((p) => [String(p.id || p.sku), p]));
+  container.querySelectorAll("[data-product-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const product = map.get(button.dataset.productId);
+      if (product) addToCart(product);
+    });
+  });
+  container.querySelectorAll("[data-lightbox-src]").forEach((image) => {
+    image.addEventListener("click", () => openLightbox(image.dataset.lightboxSrc, image.alt));
+  });
+}
+
+function openLightbox(src, alt = "صورة المنتج") {
+  const lightbox = document.getElementById("lightbox");
+  const image = document.getElementById("lightbox-img");
+  if (!lightbox || !image) return;
+  image.src = src;
+  image.alt = alt;
+  lightbox.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById("lightbox");
+  if (!lightbox) return;
+  lightbox.classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+async function initFeatured() {
+  const grid = document.getElementById("featured-grid");
+  if (!grid) return;
+  grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">جاري تحميل المنتجات...</div>';
+  const products = await fetchProducts({ featured: true, limit: 6 });
+  renderProducts(grid, products);
+}
+
+async function initProductsPage() {
+  const grid = document.getElementById("products-grid");
+  if (!grid) return;
+
+  const params = new URLSearchParams(location.search);
+  currentCategory = params.get("category") || "0-12";
+  const meta = CATEGORY_META[currentCategory] || CATEGORY_META.uncategorized;
+  document.getElementById("category-title").textContent = meta.title;
+  document.getElementById("category-subtitle").textContent = meta.subtitle;
+  document.title = `${meta.title.replace(/ [^\w\u0600-\u06FF].*$/, "")} - التميز ستور`;
+
+  grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">جاري تحميل المنتجات...</div>';
+  const products = await fetchProducts({ category: currentCategory });
+  renderProducts(grid, products);
+
+  const search = document.getElementById("product-search");
+  if (search) {
+    search.addEventListener("input", () => {
+      const q = search.value.trim().toLocaleLowerCase("ar");
+      const filtered = !q ? products : products.filter((p) => `${p.name} ${p.description || ""}`.toLocaleLowerCase("ar").includes(q));
+      renderProducts(grid, filtered);
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initFeatured();
+  initProductsPage();
+  document.getElementById("lightbox")?.addEventListener("click", (event) => {
+    if (event.target.id === "lightbox" || event.target.closest("[data-close-lightbox]")) closeLightbox();
+  });
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeLightbox(); });
+});
