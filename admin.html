@@ -106,6 +106,12 @@
           <a href="#products" class="quick-action"><span>▤</span><div><strong>إدارة المنتجات</strong><small>بحث، تحديد، حذف وتعديل جماعي</small></div></a>
           <a href="#orders" class="quick-action"><span>✓</span><div><strong>متابعة الطلبات</strong><small>فلترة وتغيير حالة عدة طلبات</small></div></a>
         </div>
+
+        <div class="storage-health-wrap">
+          <span id="storage-health-status" class="storage-health checking">جاري فحص Storage...</span>
+          <small>مساحة الصور واللوجو على Supabase</small>
+        </div>
+        <div id="storage-health-message" class="status-message"></div>
       </section>
 
       <section class="admin-section" id="products">
@@ -126,7 +132,7 @@
           <select id="product-category-filter" aria-label="فلترة حسب الفئة">
             <option value="all">كل الفئات</option>
             <option value="0-12">0 - 12 شهر</option>
-            <option value="1-2.5">سنة - سنتين ونص</option>
+            <option value="1-2.5">من سنة لسنتين ونص</option>
             <option value="3-5">3 - 5 سنين</option>
             <option value="6-11">6 - 11 سنة</option>
             <option value="uncategorized">غير مصنف</option>
@@ -171,7 +177,7 @@
                 <select id="bulk-category-select" aria-label="تغيير الفئة">
                   <option value="">نقل إلى فئة...</option>
                   <option value="0-12">0 - 12 شهر</option>
-                  <option value="1-2.5">سنة - سنتين ونص</option>
+                  <option value="1-2.5">من سنة لسنتين ونص</option>
                   <option value="3-5">3 - 5 سنين</option>
                   <option value="6-11">6 - 11 سنة</option>
                   <option value="uncategorized">غير مصنف</option>
@@ -234,7 +240,7 @@
               <label for="batch-default-category">الفئة الافتراضية</label>
               <select id="batch-default-category">
                 <option value="0-12">0 - 12 شهر</option>
-                <option value="1-2.5">سنة - سنتين ونص</option>
+                <option value="1-2.5">من سنة لسنتين ونص</option>
                 <option value="3-5">3 - 5 سنين</option>
                 <option value="6-11">6 - 11 سنة</option>
                 <option value="uncategorized" selected>غير مصنف</option>
@@ -247,10 +253,43 @@
             </label>
           </div>
 
+          <div class="batch-selection-center">
+            <div class="batch-selection-head">
+              <label class="batch-select-all-label">
+                <input type="checkbox" id="select-all-batch-drafts">
+                <span>تحديد الكل</span>
+              </label>
+              <div><strong><span id="batch-selected-count">0</span> محدد</strong> من <span id="batch-total-count">0</span> منتج في قائمة التعديل</div>
+              <div class="batch-selection-shortcuts">
+                <button class="admin-btn ghost compact" id="select-all-batch-btn" type="button">تحديد الكل</button>
+                <button class="admin-btn ghost compact" id="clear-batch-selection-btn" type="button">مسح التحديد</button>
+              </div>
+            </div>
+
+            <div class="batch-bulk-editor">
+              <div class="batch-bulk-category">
+                <select id="batch-bulk-category" data-batch-requires-selection>
+                  <option value="0-12">0 - 12 شهر</option>
+                  <option value="1-2.5">من سنة لسنتين ونص</option>
+                  <option value="3-5">3 - 5 سنين</option>
+                  <option value="6-11">6 - 11 سنة</option>
+                  <option value="uncategorized">غير مصنف</option>
+                </select>
+                <button class="bulk-btn" data-batch-bulk-action="category" data-batch-requires-selection type="button">تطبيق الفئة على المحدد</button>
+              </div>
+              <button class="bulk-btn" data-batch-bulk-action="featured" data-batch-requires-selection type="button">★ مميز</button>
+              <button class="bulk-btn" data-batch-bulk-action="unfeatured" data-batch-requires-selection type="button">☆ عادي</button>
+              <button class="bulk-btn" data-batch-bulk-action="stock" data-batch-requires-selection type="button">✓ متاح</button>
+              <button class="bulk-btn" data-batch-bulk-action="out" data-batch-requires-selection type="button">⛔ نفد</button>
+              <button class="bulk-btn danger" data-batch-bulk-action="delete" data-batch-requires-selection type="button">🗑 حذف المحدد من القائمة</button>
+            </div>
+          </div>
+
           <div id="batch-list" class="batch-list"></div>
 
           <div class="admin-actions batch-footer-actions">
             <button class="admin-btn ghost" id="clear-batch-btn" type="button">مسح القائمة</button>
+            <button class="admin-btn secondary" id="upload-selected-batch-btn" data-batch-requires-selection type="button">رفع المحدد فقط</button>
             <button class="admin-btn secondary" id="upload-batch-btn" type="button">رفع وحفظ كل المنتجات</button>
           </div>
           <div id="batch-message" class="status-message"></div>
@@ -262,7 +301,7 @@
           <div>
             <span class="section-kicker">BRANDING & MEDIA</span>
             <h2>الصور واللوجو</h2>
-            <p class="muted-text">الصور القديمة تفضل على GitHub زي ما هي، والجديد فقط يترفع على Supabase. اللوجو بيتخزن على Supabase.</p>
+            <p class="muted-text">اللوجو والصور بيتخزنوا على Supabase بدل GitHub.</p>
           </div>
         </div>
 
@@ -283,13 +322,13 @@
           </article>
 
           <article class="admin-card media-card-pro">
-            <div class="card-icon-title"><span>🛡️</span><div><h3>الحفاظ على المنتجات الحالية</h3><p>يسجل أي منتج قديم ناقص في قاعدة البيانات من غير ما يرفع أو ينقل الصور.</p></div></div>
-            <div class="legacy-preserve-note">
-              <strong>الصور القديمة ستظل على GitHub.</strong>
-              <span>المنتجات الجديدة فقط هي اللي صورها هتترفع على Supabase من قسم إضافة المنتجات.</span>
+            <div class="card-icon-title"><span>🚚</span><div><h3>نقل الصور القديمة</h3><p>عملية مرة واحدة فقط لو لسه فيه منتجات مرتبطة بأسماء صور قديمة.</p></div></div>
+            <div class="form-group">
+              <label for="legacy-files">اختار كل الصور القديمة مرة واحدة</label>
+              <input type="file" id="legacy-files" accept="image/jpeg,image/png,image/webp" multiple>
             </div>
-            <button class="admin-btn secondary" id="sync-legacy-data-btn" type="button">فحص واستيراد المنتجات القديمة الناقصة</button>
-            <div id="legacy-data-message" class="status-message"></div>
+            <button class="admin-btn secondary" id="migrate-legacy-btn" type="button">نقل وربط كل الصور القديمة</button>
+            <div id="legacy-message" class="status-message"></div>
           </article>
         </div>
       </section>
@@ -389,7 +428,7 @@
           <div class="edit-fields-column">
             <div class="admin-grid">
               <div class="form-group"><label for="edit-name">اسم المنتج</label><input id="edit-name" required></div>
-              <div class="form-group"><label for="edit-category">الفئة</label><select id="edit-category"><option value="0-12">0 - 12 شهر</option><option value="1-2.5">سنة - سنتين ونص</option><option value="3-5">3 - 5 سنين</option><option value="6-11">6 - 11 سنة</option><option value="uncategorized">غير مصنف</option></select></div>
+              <div class="form-group"><label for="edit-category">الفئة</label><select id="edit-category"><option value="0-12">0 - 12 شهر</option><option value="1-2.5">من سنة لسنتين ونص</option><option value="3-5">3 - 5 سنين</option><option value="6-11">6 - 11 سنة</option><option value="uncategorized">غير مصنف</option></select></div>
               <div class="form-group"><label for="edit-price">السعر</label><input id="edit-price" type="number" min="0" step="0.01" required></div>
               <div class="form-group"><label for="edit-old-price">السعر القديم</label><input id="edit-old-price" type="number" min="0" step="0.01"></div>
             </div>
@@ -435,7 +474,6 @@
 
   <script src="config.js"></script>
   <script src="supabase-client.js"></script>
-  <script src="products-fallback.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

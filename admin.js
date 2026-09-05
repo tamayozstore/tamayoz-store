@@ -1,12 +1,26 @@
 const ADMIN_CATEGORIES = [
   ["0-12", "0 - 12 شهر"],
-  ["1-2.5", "سنة - سنتين ونص"],
+  ["1-2.5", "من سنة لسنتين ونص"],
   ["3-5", "3 - 5 سنين"],
   ["6-11", "6 - 11 سنة"],
   ["uncategorized", "غير مصنف"]
 ];
 
+const CATEGORY_ALIASES = {
+  "1-2-5": "1-2.5",
+  "1-2-5-years": "1-2.5",
+  "1-2.5-years": "1-2.5",
+  "1-2": "1-2.5"
+};
+
+function normalizeCategoryKey(value) {
+  const raw = String(value || "uncategorized").trim();
+  const normalized = CATEGORY_ALIASES[raw] || raw;
+  return ADMIN_CATEGORIES.some(([key]) => key === normalized) ? normalized : "uncategorized";
+}
+
 let batchDrafts = [];
+let selectedBatchDraftIds = new Set();
 let adminProducts = [];
 let editingProduct = null;
 let adminOrders = [];
@@ -15,7 +29,6 @@ let selectedOrderIds = new Set();
 let productPage = 1;
 let currentOrderId = null;
 const PRODUCTS_PER_PAGE = 20;
-const LEGACY_IMPORT_MARKER_SKU = "__system_legacy_import_v2__";
 const ORDER_STATUSES = [
   ["new", "جديد"],
   ["confirmed", "تم التأكيد"],
@@ -62,8 +75,9 @@ function showToast(text, type = "success") {
 }
 
 function categoryOptions(selected = "uncategorized") {
+  const normalized = normalizeCategoryKey(selected);
   return ADMIN_CATEGORIES.map(([value, label]) =>
-    `<option value="${value}" ${value === selected ? "selected" : ""}>${label}</option>`
+    `<option value="${value}" ${value === normalized ? "selected" : ""}>${label}</option>`
   ).join("");
 }
 
@@ -110,7 +124,26 @@ function randomStoragePath() {
   return `products/${id}.webp`;
 }
 
+function friendlyStorageError(error) {
+  const text = String(error?.message || error || "");
+  if (/bucket.*not found/i.test(text) || /not found.*bucket/i.test(text)) {
+    return new Error("مساحة الصور في Supabase (products bucket) مش موجودة. شغّل ملف RUN-THIS-ONCE-FIX.sql مرة واحدة من Supabase > SQL Editor، وبعدها اعمل Refresh للوحة الأدمن.");
+  }
+  if (/row-level security|rls|policy|permission|unauthorized|forbidden/i.test(text)) {
+    return new Error("مساحة الصور موجودة لكن صلاحيات Storage ناقصة. شغّل RUN-THIS-ONCE-FIX.sql مرة واحدة من Supabase > SQL Editor.");
+  }
+  return error instanceof Error ? error : new Error(text || "خطأ في Supabase Storage");
+}
+
+async function assertProductsBucketReady() {
+  if (!window.storeDb) throw new Error("Supabase غير متصل.");
+  const { error } = await window.storeDb.storage.from("products").list("", { limit: 1 });
+  if (error) throw friendlyStorageError(error);
+  return true;
+}
+
 async function uploadProductImage(file) {
+  await assertProductsBucketReady();
   const compressed = await compressImage(file);
   const path = randomStoragePath();
   const { error } = await window.storeDb.storage.from("products").upload(path, compressed, {
@@ -134,6 +167,7 @@ async function uploadStoreLogo() {
   const button = document.getElementById("upload-store-logo-btn");
   button.disabled = true;
   try {
+    await assertProductsBucketReady();
     const compressed = await compressImage(file, 1200, 0.9);
     const path = "branding/logo.webp";
     const { error } = await window.storeDb.storage.from("products").upload(path, compressed, {
@@ -179,16 +213,41 @@ async function removeStoredImage(url) {
   if (error) console.warn("Could not remove old image:", error);
 }
 
+function updateBatchSelectionUi() {
+  const selected = batchDrafts.filter((draft) => selectedBatchDraftIds.has(String(draft.id))).length;
+  const total = batchDrafts.length;
+  const count = document.getElementById("batch-selected-count");
+  const totalEl = document.getElementById("batch-total-count");
+  if (count) count.textContent = selected.toLocaleString("ar-EG");
+  if (totalEl) totalEl.textContent = total.toLocaleString("ar-EG");
+
+  document.querySelectorAll("[data-batch-requires-selection]").forEach((el) => {
+    el.disabled = selected === 0;
+  });
+
+  const selectAll = document.getElementById("select-all-batch-drafts");
+  if (selectAll) {
+    selectAll.checked = total > 0 && selected === total;
+    selectAll.indeterminate = selected > 0 && selected < total;
+  }
+}
+
 function renderBatchDrafts() {
   const list = document.getElementById("batch-list");
   if (!list) return;
   if (!batchDrafts.length) {
     list.innerHTML = '<div class="empty-state" style="margin:0">اختار صور المنتجات مرة واحدة، وهنا هتظهر خانات الاسم والسعر لكل صورة.</div>';
+    updateBatchSelectionUi();
     return;
   }
 
-  list.innerHTML = batchDrafts.map((draft, index) => `
-    <div class="batch-row" data-draft-index="${index}">
+  list.innerHTML = batchDrafts.map((draft, index) => {
+    const selected = selectedBatchDraftIds.has(String(draft.id));
+    return `
+    <div class="batch-row ${selected ? "batch-row-selected" : ""}" data-draft-index="${index}" data-draft-id="${draft.id}">
+      <div class="batch-select-cell">
+        <input type="checkbox" data-select-draft="${draft.id}" ${selected ? "checked" : ""} aria-label="تحديد ${adminEscape(draft.name)}">
+      </div>
       <img src="${draft.preview}" alt="معاينة">
       <div>
         <label>اسم المنتج</label>
@@ -209,10 +268,10 @@ function renderBatchDrafts() {
       <div class="checkbox-stack">
         <label><input type="checkbox" data-field="featured" ${draft.featured ? "checked" : ""}> مميز</label>
         <label><input type="checkbox" data-field="in_stock" ${draft.in_stock ? "checked" : ""}> متاح</label>
-        <button class="small-btn delete" type="button" data-remove-draft="${index}">حذف</button>
+        <button class="small-btn delete" type="button" data-remove-draft="${draft.id}">حذف</button>
       </div>
-    </div>
-  `).join("");
+    </div>`;
+  }).join("");
 
   list.querySelectorAll("[data-draft-index]").forEach((row) => {
     const index = Number(row.dataset.draftIndex);
@@ -221,60 +280,111 @@ function renderBatchDrafts() {
       input.addEventListener(eventName, () => {
         const field = input.dataset.field;
         batchDrafts[index][field] = input.type === "checkbox" ? input.checked : input.value;
+        if (field === "category") batchDrafts[index][field] = normalizeCategoryKey(input.value);
       });
+    });
+  });
+
+  list.querySelectorAll("[data-select-draft]").forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+      const id = String(checkbox.dataset.selectDraft);
+      if (checkbox.checked) selectedBatchDraftIds.add(id);
+      else selectedBatchDraftIds.delete(id);
+      renderBatchDrafts();
     });
   });
 
   list.querySelectorAll("[data-remove-draft]").forEach((button) => {
     button.addEventListener("click", () => {
-      const index = Number(button.dataset.removeDraft);
+      const id = String(button.dataset.removeDraft);
+      const index = batchDrafts.findIndex((draft) => String(draft.id) === id);
+      if (index < 0) return;
       if (batchDrafts[index]?.preview) URL.revokeObjectURL(batchDrafts[index].preview);
       batchDrafts.splice(index, 1);
+      selectedBatchDraftIds.delete(id);
       renderBatchDrafts();
     });
   });
+
+  updateBatchSelectionUi();
 }
 
 function handleBatchFiles(files) {
   batchDrafts.forEach((d) => d.preview && URL.revokeObjectURL(d.preview));
-  const defaultCategory = document.getElementById("batch-default-category")?.value || "uncategorized";
-  batchDrafts = [...files].filter((file) => file.type.startsWith("image/")).map((file) => ({
-    file,
-    preview: URL.createObjectURL(file),
-    name: filenameToName(file.name),
-    price: "",
-    old_price: "",
-    category: defaultCategory,
-    featured: false,
-    in_stock: true
-  }));
+  selectedBatchDraftIds.clear();
+  const defaultCategory = normalizeCategoryKey(document.getElementById("batch-default-category")?.value || "uncategorized");
+  batchDrafts = [...files].filter((file) => file.type.startsWith("image/")).map((file, index) => {
+    const id = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${index}-${Math.random().toString(16).slice(2)}`;
+    selectedBatchDraftIds.add(String(id));
+    return {
+      id,
+      file,
+      preview: URL.createObjectURL(file),
+      name: filenameToName(file.name),
+      price: "",
+      old_price: "",
+      category: defaultCategory,
+      featured: false,
+      in_stock: true
+    };
+  });
   renderBatchDrafts();
 }
 
-async function uploadBatch() {
-  clearMessage("batch-message");
-  if (!batchDrafts.length) return setMessage("batch-message", "اختار صور الأول.", "error");
+function getSelectedBatchDrafts() {
+  return batchDrafts.filter((draft) => selectedBatchDraftIds.has(String(draft.id)));
+}
 
-  for (const draft of batchDrafts) {
+function applyBatchBulk(action) {
+  const selected = getSelectedBatchDrafts();
+  if (!selected.length) return showToast("حدد منتجات من قائمة الرفع الأول.", "error");
+
+  if (action === "category") {
+    const value = normalizeCategoryKey(document.getElementById("batch-bulk-category")?.value || "uncategorized");
+    selected.forEach((draft) => draft.category = value);
+    showToast(`تم تغيير فئة ${selected.length.toLocaleString("ar-EG")} منتج في قائمة الرفع`);
+  }
+  if (action === "featured") selected.forEach((draft) => draft.featured = true);
+  if (action === "unfeatured") selected.forEach((draft) => draft.featured = false);
+  if (action === "stock") selected.forEach((draft) => draft.in_stock = true);
+  if (action === "out") selected.forEach((draft) => draft.in_stock = false);
+  if (action === "delete") {
+    if (!confirm(`حذف ${selected.length} منتج من قائمة الرفع قبل الحفظ؟`)) return;
+    const ids = new Set(selected.map((draft) => String(draft.id)));
+    selected.forEach((draft) => draft.preview && URL.revokeObjectURL(draft.preview));
+    batchDrafts = batchDrafts.filter((draft) => !ids.has(String(draft.id)));
+    ids.forEach((id) => selectedBatchDraftIds.delete(id));
+  }
+  renderBatchDrafts();
+}
+
+async function uploadBatch(selectedOnly = false) {
+  clearMessage("batch-message");
+  const targets = selectedOnly ? getSelectedBatchDrafts() : [...batchDrafts];
+  if (!targets.length) return setMessage("batch-message", selectedOnly ? "حدد المنتجات اللي عايز تحفظها الأول." : "اختار صور الأول.", "error");
+
+  for (const draft of targets) {
     if (!draft.name.trim() || draft.price === "" || Number(draft.price) < 0) {
-      return setMessage("batch-message", "راجع اسم وسعر كل منتج قبل الحفظ.", "error");
+      return setMessage("batch-message", `راجع اسم وسعر المنتج: ${draft.name || "بدون اسم"}.`, "error");
     }
   }
 
-  const button = document.getElementById("upload-batch-btn");
-  button.disabled = true;
+  const button = document.getElementById(selectedOnly ? "upload-selected-batch-btn" : "upload-batch-btn");
+  if (button) button.disabled = true;
   let success = 0;
+  const savedIds = new Set();
 
   try {
-    for (let i = 0; i < batchDrafts.length; i++) {
-      const draft = batchDrafts[i];
-      setMessage("batch-message", `جاري رفع ${i + 1} من ${batchDrafts.length}: ${draft.name}`);
+    await assertProductsBucketReady();
+    for (let i = 0; i < targets.length; i++) {
+      const draft = targets[i];
+      setMessage("batch-message", `جاري رفع ${i + 1} من ${targets.length}: ${draft.name}`);
       const imageUrl = await uploadProductImage(draft.file);
       const payload = {
         name: draft.name.trim(),
         price: Number(draft.price),
         old_price: draft.old_price === "" ? null : Number(draft.old_price),
-        category: draft.category,
+        category: normalizeCategoryKey(draft.category),
         image_url: imageUrl,
         description: "",
         featured: Boolean(draft.featured),
@@ -288,123 +398,113 @@ async function uploadBatch() {
         throw error;
       }
       success++;
+      savedIds.add(String(draft.id));
     }
 
-    batchDrafts.forEach((d) => d.preview && URL.revokeObjectURL(d.preview));
-    batchDrafts = [];
-    document.getElementById("batch-files").value = "";
+    savedIds.forEach((id) => selectedBatchDraftIds.delete(id));
+    batchDrafts = batchDrafts.filter((draft) => {
+      if (!savedIds.has(String(draft.id))) return true;
+      if (draft.preview) URL.revokeObjectURL(draft.preview);
+      return false;
+    });
+    if (!batchDrafts.length) document.getElementById("batch-files").value = "";
     renderBatchDrafts();
-    setMessage("batch-message", `تم رفع وحفظ ${success} منتج بنجاح ✅`);
+    setMessage("batch-message", `تم رفع وحفظ ${success} منتج بنجاح ✅${batchDrafts.length ? ` — باقي ${batchDrafts.length} منتج في قائمة التعديل.` : ""}`);
     await loadAdminProducts();
   } catch (error) {
     console.error(error);
-    setMessage("batch-message", `تم حفظ ${success} منتج، وحصل خطأ بعدها: ${error.message || error}`, "error");
+    if (savedIds.size) {
+      savedIds.forEach((id) => selectedBatchDraftIds.delete(id));
+      batchDrafts = batchDrafts.filter((draft) => {
+        if (!savedIds.has(String(draft.id))) return true;
+        if (draft.preview) URL.revokeObjectURL(draft.preview);
+        return false;
+      });
+      renderBatchDrafts();
+      await loadAdminProducts();
+    }
+    const friendly = friendlyStorageError(error);
+    setMessage("batch-message", `تم حفظ ${success} منتج، وحصل خطأ بعدها: ${friendly.message}. المنتجات اللي لسه ما اتحفظتش فضلت في قائمة التعديل ومش هتحتاج تدخل بياناتها من جديد.`, "error");
+  } finally {
+    if (button) button.disabled = false;
+    updateBatchSelectionUi();
+  }
+}
+
+function legacyFilename(value) {
+  const raw = String(value || "").trim();
+  if (!raw || raw.startsWith("http://") || raw.startsWith("https://")) return null;
+  return decodeURIComponent(raw.split("?")[0].split("#")[0].split("/").pop() || "");
+}
+
+async function migrateLegacyImages() {
+  clearMessage("legacy-message");
+  const input = document.getElementById("legacy-files");
+  const files = [...(input?.files || [])].filter((file) => file.type.startsWith("image/"));
+  if (!files.length) return setMessage("legacy-message", "اختار صور المنتجات القديمة الأول.", "error");
+
+  if (!adminProducts.length) await loadAdminProducts();
+
+  const targets = new Map();
+  adminProducts.forEach((product) => {
+    const name = legacyFilename(product.image_url);
+    if (!name) return;
+    if (!targets.has(name)) targets.set(name, []);
+    targets.get(name).push(product);
+  });
+
+  if (!targets.size) {
+    return setMessage("legacy-message", "كل المنتجات الحالية مرتبطة بالفعل بروابط صور خارجية/Supabase، مفيش صور قديمة محتاجة نقل ✅");
+  }
+
+  const fileMap = new Map(files.map((file) => [file.name, file]));
+  const matchedNames = [...targets.keys()].filter((name) => fileMap.has(name));
+  const missingNames = [...targets.keys()].filter((name) => !fileMap.has(name));
+
+  if (!matchedNames.length) {
+    return setMessage("legacy-message", `ملقتش أسماء مطابقة. لازم تختار الصور الأصلية بنفس أسماء الملفات القديمة. أول اسم مطلوب: ${[...targets.keys()][0]}`, "error");
+  }
+
+  const button = document.getElementById("migrate-legacy-btn");
+  button.disabled = true;
+  let migratedFiles = 0;
+  let updatedProducts = 0;
+
+  try {
+    await assertProductsBucketReady();
+    for (let i = 0; i < matchedNames.length; i++) {
+      const filename = matchedNames[i];
+      const file = fileMap.get(filename);
+      const products = targets.get(filename) || [];
+      setMessage("legacy-message", `جاري نقل ${i + 1} من ${matchedNames.length}: ${filename}`);
+
+      const imageUrl = await uploadProductImage(file);
+      const ids = products.map((p) => p.id).filter(Boolean);
+      const { error } = await window.storeDb.from("products").update({ image_url: imageUrl }).in("id", ids);
+      if (error) {
+        await removeStoredImage(imageUrl);
+        throw error;
+      }
+
+      migratedFiles++;
+      updatedProducts += ids.length;
+    }
+
+    input.value = "";
+    await loadAdminProducts();
+    const missingText = missingNames.length
+      ? ` باقي ${missingNames.length} صورة لم يتم اختيارها: ${missingNames.slice(0, 4).join("، ")}${missingNames.length > 4 ? "…" : ""}`
+      : " كل الصور القديمة اتنقلت بنجاح، ومش محتاج ترفع صور المنتجات على GitHub ✅";
+    setMessage("legacy-message", `تم نقل ${migratedFiles} صورة وربط ${updatedProducts} منتج.${missingText}`, missingNames.length ? "error" : "success");
+  } catch (error) {
+    console.error(error);
+    setMessage("legacy-message", `تم نقل ${migratedFiles} صورة ثم حصل خطأ: ${error.message || error}`, "error");
+    await loadAdminProducts();
   } finally {
     button.disabled = false;
   }
 }
 
-function legacyCatalogRows() {
-  const rows = Array.isArray(window.TAMAYOZ_FALLBACK_PRODUCTS) ? window.TAMAYOZ_FALLBACK_PRODUCTS : [];
-  return rows.filter((p) => p?.sku && p.sku !== LEGACY_IMPORT_MARKER_SKU).map((p) => ({
-    sku: p.sku,
-    name: p.name,
-    price: Number(p.price) || 0,
-    old_price: p.old_price == null ? null : Number(p.old_price),
-    category: p.category || "uncategorized",
-    image_url: p.image_url || "",
-    description: p.description || "",
-    featured: Boolean(p.featured),
-    active: p.active !== false,
-    in_stock: p.in_stock !== false,
-    sort_order: Number(p.sort_order) || 0
-  }));
-}
-
-async function hasLegacyImportMarker() {
-  const { data, error } = await window.storeDb
-    .from("products")
-    .select("id,sku")
-    .eq("sku", LEGACY_IMPORT_MARKER_SKU)
-    .limit(1);
-  if (error) throw error;
-  return Boolean(data?.length);
-}
-
-async function writeLegacyImportMarker() {
-  const marker = {
-    sku: LEGACY_IMPORT_MARKER_SKU,
-    name: "__SYSTEM_LEGACY_IMPORT_V2__",
-    price: 0,
-    old_price: null,
-    category: "uncategorized",
-    image_url: "about:blank",
-    description: "System marker - do not edit",
-    featured: false,
-    active: true,
-    in_stock: false,
-    sort_order: -999999
-  };
-  const { error } = await window.storeDb.from("products").upsert(marker, { onConflict: "sku" });
-  if (error) throw error;
-}
-
-async function syncLegacyCatalog({ force = false, silent = false } = {}) {
-  const messageId = "legacy-data-message";
-  if (!silent) clearMessage(messageId);
-  const button = document.getElementById("sync-legacy-data-btn");
-  if (button) button.disabled = true;
-
-  try {
-    const sourceRows = legacyCatalogRows();
-    if (!sourceRows.length) {
-      if (!silent) setMessage(messageId, "ملف بيانات المنتجات القديمة غير موجود.", "error");
-      return { added: 0, skipped: true };
-    }
-
-    const markerExists = await hasLegacyImportMarker();
-    if (markerExists && !force) {
-      if (!silent) setMessage(messageId, `المنتجات القديمة متسجلة بالفعل ✅ (${sourceRows.length} منتج محفوظين كمرجع).`);
-      return { added: 0, skipped: true };
-    }
-
-    const skus = sourceRows.map((p) => p.sku);
-    const { data: existingRows, error: existingError } = await window.storeDb
-      .from("products")
-      .select("sku")
-      .in("sku", skus);
-    if (existingError) throw existingError;
-
-    const existingSkus = new Set((existingRows || []).map((p) => p.sku));
-    const missing = sourceRows.filter((p) => !existingSkus.has(p.sku));
-
-    if (missing.length) {
-      const { error: insertError } = await window.storeDb.from("products").insert(missing);
-      if (insertError) throw insertError;
-    }
-
-    await writeLegacyImportMarker();
-
-    if (!silent) {
-      const text = missing.length
-        ? `تم تسجيل ${missing.length} منتج قديم ناقص بدون رفع أي صورة ✅ الصور فضلت على GitHub زي ما هي.`
-        : "كل بيانات المنتجات القديمة موجودة بالفعل ✅ لم يتم رفع أو نقل أي صورة.";
-      setMessage(messageId, text);
-      showToast(text);
-    }
-    return { added: missing.length, skipped: false };
-  } catch (error) {
-    console.error("Legacy catalog sync failed:", error);
-    if (!silent) {
-      const text = error.message || String(error);
-      setMessage(messageId, text, "error");
-      showToast(text, "error");
-    }
-    return { added: 0, error };
-  } finally {
-    if (button) button.disabled = false;
-  }
-}
 
 async function loadAdminProducts() {
   const tbody = document.getElementById("products-tbody");
@@ -421,7 +521,7 @@ async function loadAdminProducts() {
     return;
   }
 
-  adminProducts = (data || []).filter((p) => p.sku !== LEGACY_IMPORT_MARKER_SKU);
+  adminProducts = data || [];
   const validIds = new Set(adminProducts.map((p) => String(p.id)));
   selectedProductIds = new Set([...selectedProductIds].filter((id) => validIds.has(String(id))));
   renderAdminProducts();
@@ -429,7 +529,8 @@ async function loadAdminProducts() {
 }
 
 function productCategoryLabel(category) {
-  return ADMIN_CATEGORIES.find(([value]) => value === category)?.[1] || category || "غير مصنف";
+  const normalized = normalizeCategoryKey(category);
+  return ADMIN_CATEGORIES.find(([value]) => value === normalized)?.[1] || normalized || "غير مصنف";
 }
 
 function getFilteredProducts() {
@@ -441,7 +542,7 @@ function getFilteredProducts() {
   return adminProducts.filter((product) => {
     const haystack = `${product.name || ""} ${product.description || ""}`.toLowerCase();
     if (search && !haystack.includes(search)) return false;
-    if (category !== "all" && product.category !== category) return false;
+    if (category !== "all" && normalizeCategoryKey(product.category) !== normalizeCategoryKey(category)) return false;
     if (visibility === "active" && !product.active) return false;
     if (visibility === "hidden" && product.active) return false;
     if (stock === "in" && !product.in_stock) return false;
@@ -628,7 +729,7 @@ async function bulkProductAction(action, categoryValue = "") {
   if (action === "unfeatured") payload = { featured: false };
   if (action === "category") {
     if (!categoryValue) return showToast("اختار الفئة الأول.", "error");
-    payload = { category: categoryValue };
+    payload = { category: normalizeCategoryKey(categoryValue) };
     successText = "تم نقل المنتجات للفئة الجديدة ✅";
   }
 
@@ -672,7 +773,7 @@ function openEditor(id) {
   document.getElementById("edit-name").value = editingProduct.name || "";
   document.getElementById("edit-price").value = editingProduct.price ?? "";
   document.getElementById("edit-old-price").value = editingProduct.old_price ?? "";
-  document.getElementById("edit-category").value = editingProduct.category || "uncategorized";
+  document.getElementById("edit-category").value = normalizeCategoryKey(editingProduct.category);
   document.getElementById("edit-description").value = editingProduct.description || "";
   document.getElementById("edit-featured").checked = Boolean(editingProduct.featured);
   document.getElementById("edit-active").checked = Boolean(editingProduct.active);
@@ -708,7 +809,7 @@ async function saveEditor(event) {
       name,
       price,
       old_price: document.getElementById("edit-old-price").value === "" ? null : Number(document.getElementById("edit-old-price").value),
-      category: document.getElementById("edit-category").value,
+      category: normalizeCategoryKey(document.getElementById("edit-category").value),
       description: document.getElementById("edit-description").value.trim(),
       featured: document.getElementById("edit-featured").checked,
       active: document.getElementById("edit-active").checked,
@@ -1081,10 +1182,29 @@ function renderDashboardStats() {
 function clearBatchDrafts() {
   batchDrafts.forEach((draft) => draft.preview && URL.revokeObjectURL(draft.preview));
   batchDrafts = [];
+  selectedBatchDraftIds.clear();
   const input = document.getElementById("batch-files");
   if (input) input.value = "";
   renderBatchDrafts();
   clearMessage("batch-message");
+}
+
+async function checkStorageStatus() {
+  const badge = document.getElementById("storage-health-status");
+  if (!badge) return;
+  badge.textContent = "جاري فحص Storage...";
+  badge.className = "storage-health checking";
+  try {
+    await assertProductsBucketReady();
+    badge.textContent = "Storage جاهز ✓";
+    badge.className = "storage-health ok";
+  } catch (error) {
+    const friendly = friendlyStorageError(error);
+    badge.textContent = "Storage محتاج إعداد";
+    badge.className = "storage-health error";
+    badge.title = friendly.message;
+    setMessage("storage-health-message", friendly.message, "error");
+  }
 }
 
 async function refreshDashboard() {
@@ -1092,6 +1212,7 @@ async function refreshDashboard() {
   if (button) button.disabled = true;
   try {
     await Promise.all([loadAdminProducts(), loadOrders()]);
+    await checkStorageStatus();
     showToast("تم تحديث لوحة الإدارة ✅");
   } finally {
     if (button) button.disabled = false;
@@ -1104,14 +1225,7 @@ async function showDashboard(session) {
   document.getElementById("dashboard")?.classList.remove("hidden");
   document.getElementById("admin-email").textContent = session?.user?.email || "Admin";
   await Promise.all([loadAdminProducts(), loadOrders()]);
-
-  // أول دخول بعد التحديث: يسجل أي منتج قديم ناقص في قاعدة البيانات فقط.
-  // الصور القديمة لا تتحرك من GitHub، والمنتجات الجديدة فقط صورها تروح Supabase.
-  const syncResult = await syncLegacyCatalog({ silent: true });
-  if (syncResult?.added) {
-    await loadAdminProducts();
-    showToast(`تم الحفاظ على ${syncResult.added} منتج قديم ناقص تلقائيًا ✅`);
-  }
+  checkStorageStatus();
 }
 
 function showLogin() {
@@ -1203,16 +1317,31 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("login-form")?.addEventListener("submit", login);
   document.getElementById("logout-btn")?.addEventListener("click", logout);
   document.getElementById("upload-store-logo-btn")?.addEventListener("click", uploadStoreLogo);
-  document.getElementById("sync-legacy-data-btn")?.addEventListener("click", async () => {
-    const result = await syncLegacyCatalog({ force: true, silent: false });
-    if (result?.added) await loadAdminProducts();
-  });
+  document.getElementById("legacy-files")?.addEventListener("change", () => clearMessage("legacy-message"));
+  document.getElementById("migrate-legacy-btn")?.addEventListener("click", migrateLegacyImages);
   document.getElementById("batch-files")?.addEventListener("change", (event) => handleBatchFiles(event.target.files));
   document.getElementById("batch-default-category")?.addEventListener("change", (event) => {
-    batchDrafts.forEach((draft) => draft.category = event.target.value);
+    batchDrafts.forEach((draft) => draft.category = normalizeCategoryKey(event.target.value));
     renderBatchDrafts();
   });
-  document.getElementById("upload-batch-btn")?.addEventListener("click", uploadBatch);
+  document.getElementById("upload-batch-btn")?.addEventListener("click", () => uploadBatch(false));
+  document.getElementById("upload-selected-batch-btn")?.addEventListener("click", () => uploadBatch(true));
+  document.getElementById("select-all-batch-drafts")?.addEventListener("change", (event) => {
+    selectedBatchDraftIds.clear();
+    if (event.target.checked) batchDrafts.forEach((draft) => selectedBatchDraftIds.add(String(draft.id)));
+    renderBatchDrafts();
+  });
+  document.getElementById("select-all-batch-btn")?.addEventListener("click", () => {
+    batchDrafts.forEach((draft) => selectedBatchDraftIds.add(String(draft.id)));
+    renderBatchDrafts();
+  });
+  document.getElementById("clear-batch-selection-btn")?.addEventListener("click", () => {
+    selectedBatchDraftIds.clear();
+    renderBatchDrafts();
+  });
+  document.querySelectorAll("[data-batch-bulk-action]").forEach((button) => {
+    button.addEventListener("click", () => applyBatchBulk(button.dataset.batchBulkAction));
+  });
   document.getElementById("clear-batch-btn")?.addEventListener("click", () => {
     if (batchDrafts.length && !confirm("مسح كل المنتجات الموجودة في قائمة الرفع قبل حفظها؟")) return;
     clearBatchDrafts();

@@ -210,27 +210,5 @@ on conflict (sku) do update set
   in_stock = excluded.in_stock,
   sort_order = excluded.sort_order;
 
-
--- منتجات إضافية موجودة حاليًا في GitHub.
--- image_url هنا هو اسم الملف المحلي فقط: الصور القديمة تظل على GitHub كما هي.
-insert into public.products
-  (sku, name, price, old_price, category, image_url, description, featured, active, in_stock, sort_order)
-values
-  ('legacy-0-12-031', '4 كتب قماش إنجليزي', 350, 400, '0-12', '4كتب قماش انجليزي.png', '', false, true, true, 31),
-  ('legacy-0-12-032', 'أرنب سوفت', 200, 240, '0-12', 'ارنب سوفت.png', '', false, true, true, 32),
-  ('legacy-0-12-033', 'سجادة فوم (١٨٠×١٥٠ سم)', 350, 400, '0-12', 'سجادة فوم.png', '', false, true, true, 33),
-  ('legacy-0-12-034', 'طقم طعام سيليكون', 420, 450, '0-12', 'طقم طعام سليكون.png', '', false, true, true, 34),
-  ('legacy-0-12-035', 'فون عضاضة', 180, 220, '0-12', 'فون عضاضة.png', '', false, true, true, 35),
-  ('legacy-0-12-036', 'كروت الطفل', 90, 120, '0-12', 'كروت الطفل.jpg', '', false, true, true, 36),
-  ('legacy-0-12-037', 'ملاهي سرير', 650, 850, '0-12', 'ملاهي سرير.png', '', false, true, true, 37)
-on conflict (sku) do nothing;
-
--- Marker داخلي: بعده الموقع يعتمد على Supabase للبيانات، بينما الصور القديمة تظل ملفات GitHub.
-insert into public.products
-  (sku, name, price, old_price, category, image_url, description, featured, active, in_stock, sort_order)
-values
-  ('__system_legacy_import_v2__', '__SYSTEM_LEGACY_IMPORT_V2__', 0, null, 'uncategorized', 'about:blank', 'System marker - do not edit', false, true, false, -999999)
-on conflict (sku) do nothing;
-
 -- فحص سريع
-select count(*) as products_count from public.products where sku not like '__system_%';
+select count(*) as products_count from public.products;
